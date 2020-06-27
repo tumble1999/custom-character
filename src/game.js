@@ -1,81 +1,78 @@
+class Game {
+	constructor() {
+		this.bind = createBinder(this);
+		this.renderer = new THREE.WebGLRenderer();
+		this.renderer.setSize(window.innerWidth, window.innerHeight);
+		document.body.appendChild(this.renderer.domElement);
+		
+		this.scene = new THREE.Scene;
+		
+		this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+		this.camera.position.set(0, 0, 400);
+		this.camera.lookAt(0, 0, 0);
+		window.onresize = this.bind("windowResize");
+		
+		
+		var spotLight = new THREE.SpotLight(0xffffff);
+		spotLight.position.set(600, 600, 600);
+		this.scene.add(spotLight);
+	}
 
-var renderer = new THREE.WebGLRenderer();
-renderer.setSize(window.innerWidth, window.innerHeight);
-document.body.appendChild(renderer.domElement);
+	startGame() {
+		if(this.state) {
+			//Destroy State
+			this.state.destroy();
+		}
+		this.state = new WorldScreen();
+		if(this.playerBlob) {
+			this.state.addPlayer(0,"Player",this.playerBlob);
+		}
+	}
 
-var scene = new THREE.Scene;
+	createCharacter() {
+		if(this.state) {
+			//Destroy State
+			this.state.destroy();
+		}
+		this.state = new DrawCharacterScreen(this.scene);
+	}
 
-var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-camera.position.set(0, 0, 400);
-camera.lookAt(0, 0, 0);
-window.onresize = function () {
-	var w = window.innerWidth;
-	var h = window.innerHeight;
-	if (renderer) {
-		renderer.setSize(w, h);
-		camera.aspect = w / h;
-		camera.updateProjectionMatrix();
+	submitCharacter() {
+		game.state.submitCharacter()
+	}
+
+	windowResize() {
+		var w = window.innerWidth;
+		var h = window.innerHeight;
+		if (this.renderer) {
+			this.renderer.setSize(w, h);
+			this.camera.aspect = w / h;
+			this.camera.updateProjectionMatrix();
+		}
+	}
+
+	screenToWorld(x, y, targetZ = 0) {
+		var vec = new THREE.Vector3();
+		var pos = new THREE.Vector3();
+	
+		vec.set(
+			(x / window.innerWidth) * 2 - 1,
+			- (y / window.innerHeight) * 2 + 1,
+			0.5);
+	
+		vec.unproject(this.camera);
+	
+		vec.sub(this.camera.position).normalize();
+	
+		var distance = (targetZ - this.camera.position.z) / vec.z;
+	
+		pos.copy(this.camera.position).add(vec.multiplyScalar(distance));
+	
+		return pos;
+	}
+
+	update() {
+		requestAnimationFrame(this.bind("update"));
+		this.renderer.render(this.scene, this.camera);
 	}
 }
-
-
-var spotLight = new THREE.SpotLight(0xffffff);
-spotLight.position.set(600, 600, 600);
-scene.add(spotLight);
-
-
-var drawingSpace = new DrawSpace(640, 480);
-window.ontouchstart = function(e) {
-	Array(...e.touches).forEach(window.onmousedown)
-}
-window.ontouchmove = function(e) {
-	console.log(e)
-	Array(...e.touches).forEach(window.onmousemove)
-}
-window.ontouchcancel = window.ontouchend = function(e) {
-	if(e.touches.length==0) drawingSpace.stopDrawing();
-	Array(...e.touches).forEach(window.onmouseup)
-}
-
-
-window.onmousedown = function (e) {
-	var mouseWorld = screenToWorld(e.pageX, e.pageY);
-	drawingSpace.startDrawing(mouseWorld.x, mouseWorld.y);
-}
-window.onmouseup = function (e) {
-	var mouseWorld = screenToWorld(e.pageX, e.pageY);
-	drawingSpace.stopDrawing(mouseWorld.x, mouseWorld.y);
-}
-window.onmousemove = function (e) {
-	var mouseWorld = screenToWorld(e.pageX, e.pageY);
-	drawingSpace.draw(mouseWorld.x, mouseWorld.y);
-}
-scene.add(drawingSpace.createMesh())
-
-
-function screenToWorld(x, y, targetZ = 0) {
-	var vec = new THREE.Vector3();
-	var pos = new THREE.Vector3();
-
-	vec.set(
-		(x / window.innerWidth) * 2 - 1,
-		- (y / window.innerHeight) * 2 + 1,
-		0.5);
-
-	vec.unproject(camera);
-
-	vec.sub(camera.position).normalize();
-
-	var distance = (targetZ - camera.position.z) / vec.z;
-
-	pos.copy(camera.position).add(vec.multiplyScalar(distance));
-
-	return pos;
-}
-
-function update() {
-	requestAnimationFrame(update);
-	renderer.render(scene, camera);
-}
-
-update();

@@ -4,6 +4,11 @@ class DrawSpace {
 		this.stage.canvas.width = w;
 		this.stage.canvas.height = h;
 		this.texture = new THREE.Texture(this.stage.canvas);
+		this.geometry = this.geometry = new THREE.BoxGeometry(this.stage.canvas.width,this.stage.canvas.height,.1);
+		this.material = new THREE.MeshBasicMaterial({
+			map:this.texture,
+			transparent: true
+		})
 
 		this.drawing = new createjs.Shape
 		this.stage.addChild(this.drawing);
@@ -58,12 +63,11 @@ class DrawSpace {
 			new THREE.MeshBasicMaterial({color:"white"})
 		);
 
+		
+
 		var drawingMesh = new THREE.Mesh(
-			new THREE.BoxGeometry(this.stage.canvas.width,this.stage.canvas.height,.1),
-			new THREE.MeshBasicMaterial({
-				map:this.texture,
-				transparent: true
-			})
+			this.geometry,
+			this.material
 		);
 
 		canvasMesh.add(drawingMesh);
@@ -73,6 +77,20 @@ class DrawSpace {
 		this.canvasMesh = canvasMesh;
 
 		return canvasMesh;
+	}
+
+	async createBlob() {
+		return new Promise((resolve,reject)=>{
+			this.stage.canvas.toBlob(resolve,'image/png',1);
+		})
+	}
+
+	destroy() {
+		this.stage.removeAllChildren()
+		this.stage.removeAllEventListeners()
+		this.stage.canvas = null
+		this.stage._eventListeners = null
+		game.scene.remove(this.canvasMesh);
 	}
 
 }
