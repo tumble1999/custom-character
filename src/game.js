@@ -18,8 +18,6 @@ window.onresize = function () {
 	}
 }
 
-var controls = new THREE.OrbitControls(camera, renderer.domElement);
-
 
 var spotLight = new THREE.SpotLight(0xffffff);
 spotLight.position.set(600, 600, 600);
@@ -42,11 +40,9 @@ window.onmousemove = function (e) {
 scene.add(drawingSpace.createMesh())
 
 
-//document.body.appendChild(drawingSpace.stage.canvas)
-
 function screenToWorld(x, y, targetZ = 0) {
-	var vec = new THREE.Vector3(); // create once and reuse
-	var pos = new THREE.Vector3(); // create once and reuse
+	var vec = new THREE.Vector3();
+	var pos = new THREE.Vector3();
 
 	vec.set(
 		(x / window.innerWidth) * 2 - 1,
@@ -66,7 +62,6 @@ function screenToWorld(x, y, targetZ = 0) {
 
 function update() {
 	requestAnimationFrame(update);
-	controls.update();
 	renderer.render(scene, camera);
 }
 
