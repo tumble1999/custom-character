@@ -28,6 +28,6 @@ gulp.task('server', function () {
 		server: ".",
 		port: 8080
 	});
-	gulp.watch("src/*", buildClient);
-	gulp.watch("client/game.min.js").on('change', browserSync.reload);
+	gulp.watch("src/**/*.js", buildClient);
+	gulp.watch("*").on('change', browserSync.reload);
 });

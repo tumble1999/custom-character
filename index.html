@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Custom Character Test</title>
 	<style>
-		html,body {
+		html,
+		body {
 			margin: 0;
 			padding: 0;
 			width: 100%;
@@ -13,12 +15,21 @@
 		}
 	</style>
 </head>
+
 <body>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r99/three.min.js"></script>
+	<script src="https://threejs.org/build/three.js"></script>
+	<script src="https://cdn.jsdelivr.net/gh/mrdoob/three.js/examples/js/controls/OrbitControls.js"></script>
 	<script src="https://code.createjs.com/1.0.0/createjs.min.js"></script>
+	<script>
+		window.io || document.write('<script src="client/socket.io.js">\x3C/script>');
+		window.THREE||document.write('<script src="client/three.js">\x3C/script>');
+		window.THREE.OrbitControls||document.write('<script src="client/OrbitControls.js">\x3C/script>');
+		window.createjs||document.write('<script src="client/createjs.min.js">\x3C/script>');
+	</script>
 	<!-- Game Script -->
 	<script src="client/game.min.js"></script>
 	<!-- <script src="client/index.js"></script> -->
 </body>
+
 </html>
