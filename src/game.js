@@ -25,15 +25,15 @@ scene.add(spotLight);
 
 
 var drawingSpace = new DrawSpace(640, 480);
-window.onmousedown = function (e) {
+window.ontouchstart = window.onmousedown = function (e) {
 	var mouseWorld = screenToWorld(e.offsetX, e.offsetY);
 	drawingSpace.startDrawing(mouseWorld.x, mouseWorld.y);
 }
-window.onmouseup = function (e) {
+window.ontouchend = window.onmouseup = function (e) {
 	var mouseWorld = screenToWorld(e.offsetX, e.offsetY);
 	drawingSpace.stopDrawing(mouseWorld.x, mouseWorld.y);
 }
-window.onmousemove = function (e) {
+window.ontouchmove = window.onmousemove = function (e) {
 	var mouseWorld = screenToWorld(e.offsetX, e.offsetY);
 	drawingSpace.draw(mouseWorld.x, mouseWorld.y);
 }
