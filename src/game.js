@@ -25,16 +25,29 @@ scene.add(spotLight);
 
 
 var drawingSpace = new DrawSpace(640, 480);
-window.ontouchstart = window.onmousedown = function (e) {
-	var mouseWorld = screenToWorld(e.offsetX, e.offsetY);
+window.ontouchstart = function(e) {
+	Array(...e.touches).forEach(window.onmousedown)
+}
+window.ontouchmove = function(e) {
+	console.log(e)
+	Array(...e.touches).forEach(window.onmousemove)
+}
+window.ontouchcancel = window.ontouchend = function(e) {
+	if(e.touches.length==0) drawingSpace.stopDrawing();
+	Array(...e.touches).forEach(window.onmouseup)
+}
+
+
+window.onmousedown = function (e) {
+	var mouseWorld = screenToWorld(e.pageX, e.pageY);
 	drawingSpace.startDrawing(mouseWorld.x, mouseWorld.y);
 }
-window.ontouchend = window.onmouseup = function (e) {
-	var mouseWorld = screenToWorld(e.offsetX, e.offsetY);
+window.onmouseup = function (e) {
+	var mouseWorld = screenToWorld(e.pageX, e.pageY);
 	drawingSpace.stopDrawing(mouseWorld.x, mouseWorld.y);
 }
-window.ontouchmove = window.onmousemove = function (e) {
-	var mouseWorld = screenToWorld(e.offsetX, e.offsetY);
+window.onmousemove = function (e) {
+	var mouseWorld = screenToWorld(e.pageX, e.pageY);
 	drawingSpace.draw(mouseWorld.x, mouseWorld.y);
 }
 scene.add(drawingSpace.createMesh())
