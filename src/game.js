@@ -34,11 +34,7 @@ class Game {
 		this.dialogue = new DrawCharacterScreen;
 		this.scene.add(this.dialogue);
 	}
-
-	submitCharacter() {
-		game.dialogue.submitCharacter()
-	}
-
+	
 	windowResize() {
 		var w = window.innerWidth;
 		var h = window.innerHeight;
@@ -71,6 +67,7 @@ class Game {
 
 	update() {
 		requestAnimationFrame(this.bind("update"));
+		if(this.world) this.world.update();
 		this.renderer.render(this.scene, this.camera);
 	}
 }

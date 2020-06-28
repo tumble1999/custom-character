@@ -1,5 +1,5 @@
 class DrawCharacterScreen extends THREE.Group {
-	constructor() {
+	constructor(prompt) {
 		super();
 		this.bind = createBinder(this);
 		this.drawingSpace = new DrawSpace(640, 480);
@@ -13,8 +13,9 @@ class DrawCharacterScreen extends THREE.Group {
 		this.parent.remove(this);
 		this.remove(this.drawingSpace.getMesh())
 		this.drawingSpace.dispose();
-		window.onmousedown = window.onmouseup =
-		window.onmousemove = undefined;
+		window.removeEventListener("mousedown", this.bind("mouseDown"));
+		window.removeEventListener("mouseup", this.bind("mouseUp"));
+		window.removeEventListener("mousemove",this.bind("mouseMove"));
 	}
 
 	mouseDown(e) {

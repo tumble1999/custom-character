@@ -7,11 +7,13 @@ class WorldScreen extends THREE.Group {
 		window.addEventListener("mousedown", this.bind("mouseDown"));
 	}
 
-	
+	update() {
+		Object.values(this.players).forEach(p=>p.update());
+	}
 
 	mouseDown(e) {
 		var mouseWorld = screenToWorld(e.pageX, e.pageY);
-		game.player.position.set(mouseWorld.x, mouseWorld.y,0)
+		game.player.moveTo(mouseWorld.x, mouseWorld.y,0)
 
 	}
 
