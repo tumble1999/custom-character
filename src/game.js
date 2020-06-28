@@ -10,7 +10,7 @@ class Game {
 		this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 		this.camera.position.set(0, 0, 400);
 		this.camera.lookAt(0, 0, 0);
-		window.onresize = this.bind("windowResize");
+		window.addEventListener("onresize",this.bind("windowResize"));
 		
 		
 		var spotLight = new THREE.SpotLight(0xffffff);

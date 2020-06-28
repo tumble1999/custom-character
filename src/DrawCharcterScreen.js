@@ -2,12 +2,13 @@ class DrawCharacterScreen {
 	constructor(scene) {
 		this.bind = createBinder(this);
 		this.drawingSpace = new DrawSpace(640, 480);
-		window.ontouchstart = this.bind("touchStart");
-		window.ontouchmove = this.bind("touchMove");
-		window.ontouchcancel = window.ontouchend = this.bind("touchEnd")
-		window.onmousedown = this.bind("mouseDown");
-		window.onmouseup = this.bind("mouseUp");
-		window.onmousemove = this.bind("mouseMove");
+		window.addEventListener("touchstart", this.bind("touchStart"));
+		window.addEventListener("touchmove", this.bind("touchMove"));
+		window.addEventListener("touchcancel", this.bind("touchEnd"));
+		window.addEventListener("touchend", this.bind("touchEnd"));
+		window.addEventListener("mousedown", this.bind("mouseDown"));
+		window.addEventListener("mouseup", this.bind("mouseUp"));
+		window.addEventListener("mousemove",this.bind("mouseMove"));
 		scene.add(this.drawingSpace.createMesh())
 	}
 
@@ -21,20 +22,21 @@ class DrawCharacterScreen {
 	}
 
 	touchStart(e) {
-		Array(...e.touches).forEach(this.mouseDown)
+		Array(...e.touches).forEach(this.bind("mouseDown"))
 	}
 
 	touchMove(e) {
-		Array(...e.touches).forEach(this.mouseMove)
+		Array(...e.touches).forEach(this.bind("mouseMove"))
 	}
 
 	touchEnd(e) {
-		if (e.touches.length == 0) this.drawingSpace.stopDrawing();
-		Array(...e.touches).forEach(this.mouseUp)
+		if (e.touches.length == 0) enableScroll(); this.drawingSpace.stopDrawing();
+		Array(...e.touches).forEach(this.bind("mouseUp"))
 	}
 
 	mouseDown(e) {
 		var mouseWorld = screenToWorld(e.pageX, e.pageY);
+		if(inside(mouseWorld.toArray(),game.state.drawingSpace.canvasMesh.geometry.vertices.map(v=>v.toArray()))) disableScroll();
 		this.drawingSpace.startDrawing(mouseWorld.x, mouseWorld.y);
 
 	}
@@ -46,6 +48,7 @@ class DrawCharacterScreen {
 	}
 
 	mouseUp(e) {
+		enableScroll();
 		var mouseWorld = screenToWorld(e.pageX, e.pageY);
 		this.drawingSpace.stopDrawing(mouseWorld.x, mouseWorld.y);
 	}
