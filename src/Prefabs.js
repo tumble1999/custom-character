@@ -1,0 +1,17 @@
+var GameColors = {
+	red: 0xff0000,
+	orange: 0xff7f00,
+	yellow: 0xffff00,
+	line: 0x7fff00,
+	green: 0x00ff00,
+	springGreen: 0x00ff7f,
+	cyan: 0x00ffff,
+	azure: 0x007fff,
+	blue: 0x0000ff,
+	violet: 0x7f00ff,
+	magenta: 0xff00ff,
+	rose: 0xff007f,
+	white:0xffffff,
+	grey:0x808080,
+	black:0x000000
+};

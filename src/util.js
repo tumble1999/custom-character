@@ -1,23 +1,3 @@
-function screenToWorld(x, y, targetZ = 0) {
-	var vec = new THREE.Vector3();
-	var pos = new THREE.Vector3();
-
-	vec.set(
-		(x / window.innerWidth) * 2 - 1,
-		- (y / window.innerHeight) * 2 + 1,
-		0.5);
-
-	vec.unproject(game.camera);
-
-	vec.sub(game.camera.position).normalize();
-
-	var distance = (targetZ - game.camera.position.z) / vec.z;
-
-	pos.copy(game.camera.position).add(vec.multiplyScalar(distance));
-
-	return pos;
-}
-
 function createBinder(instance) {
 	return (function(a,...p){
 		return this[a].bind(this,...p);
@@ -28,21 +8,69 @@ function blobFromBytes(bytes) {
 	return new Blob([bytes.buffer],{type:"image/png"});
 }
 
-function inside(point, vs) {
-    // ray-casting algorithm based on
-    // http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
 
-    var x = point[0], y = point[1];
+function lerpXY(a, b, t) {
+	return {
+		x: a.x + t * (b.x - a.x),
+		y: a.y + t * (b.y - a.y)
+	}
+}
 
-    var inside = false;
-    for (var i = 0, j = vs.length - 1; i < vs.length; j = i++) {
-        var xi = vs[i][0], yi = vs[i][1];
-        var xj = vs[j][0], yj = vs[j][1];
 
-        var intersect = ((yi > y) != (yj > y))
-            && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
-        if (intersect) inside = !inside;
-    }
 
-    return inside;
-};
+function vec(...p) {
+	return 1 == p.length ? "object" == typeof p[0] ? Object.values(p[0]) : p[0] : p
+}
+
+function mag2(...p) {
+    return (p = vec(...p)).reduce((e,i)=>e + i * i, 0)
+}
+
+function mag(...p) {
+	return Math.sqrt(mag2(...p));
+}
+
+function norm(...p) {
+	p = vec(...p);
+	var length = mag(...p);
+	return p.map(i=>i/length);
+}
+
+function subVec(a,b) {
+	return vec(a).map((a,i)=>a-vec(b)[i]);
+}
+function addVec(a,b) {
+	return vec(a).map((a,i)=>a+vec(b)[i]);
+}
+function multVec(a,b) {
+	return vec(a).map((a,i)=>a*vec(b)[i]);
+}
+function divVec(a,b) {
+	return vec(a).map((a,i)=>a/vec(b)[i]);
+}
+
+function moveTowards(current,target,speed) {
+	
+	/*var dx = target.x-current.x;;
+	var dy = target.y - current.y
+	if(distance.length()>this.speed) distance.normalize().multiplyScalar(this.speed)
+	this.position.add(distance)*/
+
+
+	var dx = target.x-current.x;;
+	var dy = target.y - current.y
+	if(mag([dx,dy])>speed){
+		var angle = Math.atan2(dy,dx);
+		var n = norm([dx,dy]);
+		dx = n[0]*speed;
+		dy=n[1]*speed;
+		/*dx=speed*Math.cos(angle)
+		dy=speed*Math.sin(angle)*/
+	}
+
+	return {
+		x:current.x+dx,
+		y:current.y+dy
+	}
+
+}

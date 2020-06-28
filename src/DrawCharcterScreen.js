@@ -1,44 +1,33 @@
-class DrawCharacterScreen extends THREE.Group {
+class DrawCharacterScreen extends PIXI.Container {
 	constructor(prompt) {
 		super();
 		this.bind = createBinder(this);
-		this.drawingSpace = new DrawSpace(640, 480);
-		window.addEventListener("mousedown", this.bind("mouseDown"));
-		window.addEventListener("mouseup", this.bind("mouseUp"));
-		window.addEventListener("mousemove",this.bind("mouseMove"));
-		this.add(this.drawingSpace.getMesh())
+		this.drawingSpace = new DrawSpace(100, 100);
+		this.addChild(this.drawingSpace);
 	}
 
-	dispose() {
-		this.parent.remove(this);
-		this.remove(this.drawingSpace.getMesh())
-		this.drawingSpace.dispose();
-		window.removeEventListener("mousedown", this.bind("mouseDown"));
-		window.removeEventListener("mouseup", this.bind("mouseUp"));
-		window.removeEventListener("mousemove",this.bind("mouseMove"));
+	destroy(o) {
+		super.destroy(o);
+		this.drawingSpace.destroy();
 	}
 
 	mouseDown(e) {
-		var mouseWorld = screenToWorld(e.pageX, e.pageY);
-		if(inside(mouseWorld.toArray(),this.drawingSpace.canvasMesh.geometry.vertices.map(v=>v.toArray()))) disableScroll();
-		this.drawingSpace.startDrawing(mouseWorld.x, mouseWorld.y);
+		if(!this) return;
+		// Disable scroll if in Draw Space
+		//if(inside(mouseWorld.toArray(),this.drawingSpace.canvasMesh.geometry.vertices.map(v=>v.toArray()))) disableScroll();
+		this.drawingSpace.startDrawing(e.pageX-this.x, e.pageY-this.y);
 
 	}
 
 	mouseMove(e) {
-		var mouseWorld = screenToWorld(e.pageX, e.pageY);
-		this.drawingSpace.draw(mouseWorld.x, mouseWorld.y);
+		if(!this) return;
+		this.drawingSpace.draw(e.pageX-this.x, e.pageY-this.y);
 
 	}
 
 	mouseUp(e) {
+		if(!this) return;
 		enableScroll();
-		var mouseWorld = screenToWorld(e.pageX, e.pageY);
-		this.drawingSpace.stopDrawing(mouseWorld.x, mouseWorld.y);
-	}
-
-	async submitCharacter() {
-		game.playerBlob = await this.drawingSpace.createBlob();
-		game.startGame();
+		this.drawingSpace.stopDrawing();
 	}
 }

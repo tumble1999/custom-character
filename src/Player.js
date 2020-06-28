@@ -1,12 +1,12 @@
-class Player extends THREE.Group {
+class Player extends PIXI.Sprite {
 	constructor(id,name, textureBlob) {
-		super();
-		//setup Texture
+		super(PIXI.Texture.from(URL.createObjectURL(textureBlob)));
 		this.playerId = id;
 		this.name = name;
-		var image = new Image();
+		this.speed = 3;
+		this.destination = {x:this.x,y:this.y};
+		/*var image = new Image();
 		this.image = image;
-		this.speed = 4;
 		image.src = URL.createObjectURL(textureBlob);
 		//window.document.body.appendChild(image);
 		var texture = new THREE.Texture;
@@ -15,28 +15,17 @@ class Player extends THREE.Group {
 			texture.image = image;
 			texture.needsUpdate = true;
 			mesh.scale.set(100*image.width/image.height,100,1);
-		}
-		var mesh = new THREE.Mesh(
-			new THREE.PlaneGeometry(1,1,1),
-			new THREE.MeshBasicMaterial({
-				map:texture,
-				transparent:true
-			})
-		);
-		this.mesh = mesh;
-		this.add(mesh);
-		this.destination = new THREE.Vector3;
-		this.destination.copy(this.position)
+		}*/
 	}
 
 	update() {
-		var distance = new THREE.Vector3;
-		distance.copy(this.destination).sub(this.position);
-		if(distance.length()>this.speed) distance.normalize().multiplyScalar(this.speed)
-		this.position.add(distance)
+		var pos = moveTowards({x:this.x,y:this.y},this.destination,this.speed);
+		this.x = pos.x;
+		this.y = pos.y;
 	}
 
 	moveTo(x,y) {
-		this.destination.set(x,y,0);
+		var p = 4;
+		this.destination = {x:x-this.width/2,y:y-(p-1)/(p)*this.height};
 	}
 }

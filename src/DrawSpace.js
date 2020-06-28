@@ -1,25 +1,27 @@
-class DrawSpace {
+class DrawSpace extends PIXI.Container {
 	constructor(w,h) {
+		super();
 		this.stage = new createjs.Stage(document.createElement("canvas"));
 		this.stage.canvas.width = w;
 		this.stage.canvas.height = h;
-		this.texture = new THREE.Texture(this.stage.canvas);
-		this.geometry = this.geometry = new THREE.BoxGeometry(this.stage.canvas.width,this.stage.canvas.height,.1);
-		this.material = new THREE.MeshBasicMaterial({
-			map:this.texture,
-			transparent: true
-		})
+		this.background = PIXI.Sprite.from(PIXI.Texture.WHITE)
+		this.background.width = w;
+		this.background.height = h;
+		this.addChild(this.background);
+		this.sprite = new PIXI.Sprite(PIXI.Texture.from(this.stage.canvas))
+		this.addChild(this.sprite);
 
 		this.drawing = new createjs.Shape
 		this.stage.addChild(this.drawing);
 
 		this.pen = {
 			color: "#ff00ff",
-			size: 10
+			size: 2
 		}
 		this.stopDrawing();
 		this.stage.update();
-		this.texture.needsUpdate = true;
+		this.width = 500
+		this.height = 500;
 	}
 	setSize(h,w) {
 		this.stage.canvas.width = w;
@@ -39,8 +41,8 @@ class DrawSpace {
 	}
 
 	draw(x,y) {
-		x=this.stage.canvas.width/2+x
-		y=this.stage.canvas.height/2-y;
+		x/=5;
+		y/=5;
 		if(this.pen.active) {
 			if (this.pen.x) {
 				this.moved = true;
@@ -49,34 +51,11 @@ class DrawSpace {
 					.moveTo(this.pen.x||x, this.pen.y||y)
 					.lineTo(x,y);
 				this.stage.update();
-				this.texture.needsUpdate = true;
+				this.sprite.texture.update();
 			}
 			this.pen.x = x;
 			this.pen.y = y;
 		}
-	}
-
-	getMesh() {
-		if(this.canvasMesh) return this.canvasMesh;
-		var canvasMesh = new THREE.Mesh(
-			new THREE.BoxGeometry(this.stage.canvas.width,this.stage.canvas.height,1),
-			new THREE.MeshBasicMaterial({color:"white"})
-		);
-
-		
-
-		var drawingMesh = new THREE.Mesh(
-			this.geometry,
-			this.material
-		);
-
-		canvasMesh.add(drawingMesh);
-		drawingMesh.position.set(0,0,canvasMesh.scale.z/2+drawingMesh.scale.z/2);
-
-		this.drawingMesh = drawingMesh;
-		this.canvasMesh = canvasMesh;
-
-		return canvasMesh;
 	}
 
 	async createBlob() {
@@ -85,11 +64,10 @@ class DrawSpace {
 		})
 	}
 
-	dispose() {
+	destroy() {
 		this.stage.removeAllChildren()
 		this.stage.removeAllEventListeners()
 		this.stage._eventListeners = null
-		game.scene.remove(this.canvasMesh);
 	}
 
 }

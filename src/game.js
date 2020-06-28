@@ -2,7 +2,28 @@ class Game {
 	constructor() {
 		this.bind = createBinder(this);
 		this.touchHandler = new TouchHandler();
-		this.renderer = new THREE.WebGLRenderer();
+		this.app = new App(window.innerWidth, window.innerHeight,"#000000");
+		document.body.appendChild(this.app.domElement())
+		this.app.onUpdate(this.bind("update"));
+		window.addEventListener("mousedown", this.bind("mouseDown"));
+		window.addEventListener("mouseup", this.bind("mouseUp"));
+		window.addEventListener("mousemove",this.bind("mouseMove"));
+
+		
+
+		var margin = 5;
+		var buttons = new PIXI.Container();
+		this.app.addChild(buttons);
+		var button1 = new Button("New",this.bind("createCharacter"),"azure")
+		button1.x = -(button1.width+margin/2);
+		var button2 = new Button("Submit?",this.bind("startGame"),"azure")
+		button2.x = margin/2;
+		buttons.addChild(button1);
+		buttons.addChild(button2);
+		buttons.x = this.app.screen.width/2;
+		buttons.y = this.app.screen.height-5-buttons.height;
+
+		/*this.renderer = new THREE.WebGLRenderer();
 		this.renderer.setSize(window.innerWidth, window.innerHeight);
 		document.body.appendChild(this.renderer.domElement);
 		
@@ -14,60 +35,45 @@ class Game {
 		
 		var spotLight = new THREE.SpotLight(0xffffff);
 		spotLight.position.set(600, 600, 600);
-		this.scene.add(spotLight);
+		this.scene.add(spotLight);*/
 		
-		window.addEventListener("onresize",this.bind("windowResize"));
+		//window.addEventListener("onresize",this.bind("windowResize"));
 	}
 
-	startGame() {
+	async startGame() {
 		if(this.dialogue) {
-			this.dialogue.dispose();
+			this.playerBlob = await this.dialogue.drawingSpace.createBlob();
+			this.dialogue.destroy({children:true});
+			delete this.dialogue;
 		}
-		this.world = new WorldScreen();
-		this.scene.add(this.world)
+		this.world = new World();
+		this.app.addChild(this.world)
 		if(this.playerBlob) {
 			this.player = this.world.addPlayer(0,"Player",this.playerBlob);
 		}
 	}
 
+	update(dt) {
+		if(this.world) this.world.update(dt)
+	}
+
 	createCharacter() {
 		this.dialogue = new DrawCharacterScreen;
-		this.scene.add(this.dialogue);
-	}
-	
-	windowResize() {
-		var w = window.innerWidth;
-		var h = window.innerHeight;
-		if (this.renderer) {
-			this.renderer.setSize(w, h);
-			this.camera.aspect = w / h;
-			this.camera.updateProjectionMatrix();
-		}
+		this.dialogue.x = this.app.screen.width/2-this.dialogue.width/2;
+		this.dialogue.y = this.app.screen.height/2-this.dialogue.height/2;
+		this.app.addChild(this.dialogue);
 	}
 
-	screenToWorld(x, y, targetZ = 0) {
-		var vec = new THREE.Vector3();
-		var pos = new THREE.Vector3();
-	
-		vec.set(
-			(x / window.innerWidth) * 2 - 1,
-			- (y / window.innerHeight) * 2 + 1,
-			0.5);
-	
-		vec.unproject(this.camera);
-	
-		vec.sub(this.camera.position).normalize();
-	
-		var distance = (targetZ - this.camera.position.z) / vec.z;
-	
-		pos.copy(this.camera.position).add(vec.multiplyScalar(distance));
-	
-		return pos;
+	mouseDown(e) {
+		if(this.dialogue) this.dialogue.mouseDown(e);
+		if(this.world) this.world.mouseDown(e);
 	}
 
-	update() {
-		requestAnimationFrame(this.bind("update"));
-		if(this.world) this.world.update();
-		this.renderer.render(this.scene, this.camera);
+	mouseMove(e) {
+		if(this.dialogue) this.dialogue.mouseMove(e);
+	}
+
+	mouseUp(e) {
+		if(this.dialogue) this.dialogue.mouseUp(e);
 	}
 }
