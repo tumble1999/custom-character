@@ -56,7 +56,7 @@ class DrawSpace {
 		}
 	}
 
-	createMesh() {
+	getMesh() {
 		if(this.canvasMesh) return this.canvasMesh;
 		var canvasMesh = new THREE.Mesh(
 			new THREE.BoxGeometry(this.stage.canvas.width,this.stage.canvas.height,1),
@@ -85,7 +85,7 @@ class DrawSpace {
 		})
 	}
 
-	destroy() {
+	dispose() {
 		this.stage.removeAllChildren()
 		this.stage.removeAllEventListeners()
 		this.stage._eventListeners = null

@@ -1,22 +1,25 @@
-class DrawCharacterScreen {
-	constructor(scene) {
+class DrawCharacterScreen extends THREE.Group {
+	constructor() {
+		super();
 		this.bind = createBinder(this);
 		this.drawingSpace = new DrawSpace(640, 480);
 		window.addEventListener("mousedown", this.bind("mouseDown"));
 		window.addEventListener("mouseup", this.bind("mouseUp"));
 		window.addEventListener("mousemove",this.bind("mouseMove"));
-		scene.add(this.drawingSpace.createMesh())
+		this.add(this.drawingSpace.getMesh())
 	}
 
-	destroy() {
-		this.drawingSpace.destroy();
+	dispose() {
+		this.parent.remove(this);
+		this.remove(this.drawingSpace.getMesh())
+		this.drawingSpace.dispose();
 		window.onmousedown = window.onmouseup =
 		window.onmousemove = undefined;
 	}
 
 	mouseDown(e) {
 		var mouseWorld = screenToWorld(e.pageX, e.pageY);
-		if(inside(mouseWorld.toArray(),game.state.drawingSpace.canvasMesh.geometry.vertices.map(v=>v.toArray()))) disableScroll();
+		if(inside(mouseWorld.toArray(),this.drawingSpace.canvasMesh.geometry.vertices.map(v=>v.toArray()))) disableScroll();
 		this.drawingSpace.startDrawing(mouseWorld.x, mouseWorld.y);
 
 	}

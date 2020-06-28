@@ -20,26 +20,23 @@ class Game {
 	}
 
 	startGame() {
-		if(this.state) {
-			//Destroy State
-			this.state.destroy();
+		if(this.dialogue) {
+			this.dialogue.dispose();
 		}
-		this.state = new WorldScreen();
+		this.world = new WorldScreen();
+		this.scene.add(this.world)
 		if(this.playerBlob) {
-			this.state.addPlayer(0,"Player",this.playerBlob);
+			this.player = this.world.addPlayer(0,"Player",this.playerBlob);
 		}
 	}
 
 	createCharacter() {
-		if(this.state) {
-			//Destroy State
-			this.state.destroy();
-		}
-		this.state = new DrawCharacterScreen(this.scene);
+		this.dialogue = new DrawCharacterScreen;
+		this.scene.add(this.dialogue);
 	}
 
 	submitCharacter() {
-		game.state.submitCharacter()
+		game.dialogue.submitCharacter()
 	}
 
 	windowResize() {
