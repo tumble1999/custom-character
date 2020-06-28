@@ -1,6 +1,7 @@
 class Game {
 	constructor() {
 		this.bind = createBinder(this);
+		this.touchHandler = new TouchHandler();
 		this.renderer = new THREE.WebGLRenderer();
 		this.renderer.setSize(window.innerWidth, window.innerHeight);
 		document.body.appendChild(this.renderer.domElement);
@@ -9,13 +10,13 @@ class Game {
 		
 		this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 		this.camera.position.set(0, 0, 400);
-		this.camera.lookAt(0, 0, 0);
-		window.addEventListener("onresize",this.bind("windowResize"));
-		
+		this.camera.lookAt(0, 0, 0);		
 		
 		var spotLight = new THREE.SpotLight(0xffffff);
 		spotLight.position.set(600, 600, 600);
 		this.scene.add(spotLight);
+		
+		window.addEventListener("onresize",this.bind("windowResize"));
 	}
 
 	startGame() {

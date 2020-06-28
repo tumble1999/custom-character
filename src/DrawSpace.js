@@ -88,7 +88,6 @@ class DrawSpace {
 	destroy() {
 		this.stage.removeAllChildren()
 		this.stage.removeAllEventListeners()
-		this.stage.canvas = null
 		this.stage._eventListeners = null
 		game.scene.remove(this.canvasMesh);
 	}
