@@ -38,7 +38,7 @@ class Client {
 		});
 	}
 	disconnect() {
-		this.world.removePlayer(this.getID())
+		this.world.removePlayer(this,this.getID())
 		console.log("Client Disconnected:", this.name);
 	}
 
