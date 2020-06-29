@@ -8,6 +8,14 @@ function blobFromBytes(bytes) {
 	return new Blob([bytes.buffer],{type:"image/png"});
 }
 
+function centerTo(a,b) {
+	if(!b) {
+		b={width:0,height:0}
+	}
+	a.x = b.width/2-a.width/2
+	a.y = b.height/2-a.height/2
+}
+
 
 function lerpXY(a, b, t) {
 	return {

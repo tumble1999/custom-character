@@ -1,27 +1,24 @@
 class Player extends PIXI.Sprite {
 	constructor(id,name, textureBlob) {
 		super(PIXI.Texture.from(URL.createObjectURL(textureBlob)));
+		this.x = game.app.screen.width/2
+		this.y = game.app.screen.height/2
 		this.playerId = id;
 		this.name = name;
 		this.speed = 3;
 		this.destination = {x:this.x,y:this.y};
-		/*var image = new Image();
-		this.image = image;
-		image.src = URL.createObjectURL(textureBlob);
-		//window.document.body.appendChild(image);
-		var texture = new THREE.Texture;
-		this.texture = texture;
-		image.onload = function() {
-			texture.image = image;
-			texture.needsUpdate = true;
-			mesh.scale.set(100*image.width/image.height,100,1);
-		}*/
+
+		this.nicknameSprite = new BorderText(name);
+		this.addChild(this.nicknameSprite)
 	}
 
 	update() {
 		var pos = moveTowards({x:this.x,y:this.y},this.destination,this.speed);
 		this.x = pos.x;
 		this.y = pos.y;
+
+		centerTo(this.nicknameSprite,this);
+		this.nicknameSprite.y = 0
 	}
 
 	moveTo(x,y) {

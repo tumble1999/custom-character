@@ -2,7 +2,7 @@ var GameColors = {
 	red: 0xff0000,
 	orange: 0xff7f00,
 	yellow: 0xffff00,
-	line: 0x7fff00,
+	lime: 0x7fff00,
 	green: 0x00ff00,
 	springGreen: 0x00ff7f,
 	cyan: 0x00ffff,

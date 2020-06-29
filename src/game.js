@@ -8,36 +8,7 @@ class Game {
 		window.addEventListener("mousedown", this.bind("mouseDown"));
 		window.addEventListener("mouseup", this.bind("mouseUp"));
 		window.addEventListener("mousemove",this.bind("mouseMove"));
-
-		
-
-		var margin = 5;
-		var buttons = new PIXI.Container();
-		this.app.addChild(buttons);
-		var button1 = new Button("New",this.bind("createCharacter"),"azure")
-		button1.x = -(button1.width+margin/2);
-		var button2 = new Button("Submit?",this.bind("startGame"),"azure")
-		button2.x = margin/2;
-		buttons.addChild(button1);
-		buttons.addChild(button2);
-		buttons.x = this.app.screen.width/2;
-		buttons.y = this.app.screen.height-5-buttons.height;
-
-		/*this.renderer = new THREE.WebGLRenderer();
-		this.renderer.setSize(window.innerWidth, window.innerHeight);
-		document.body.appendChild(this.renderer.domElement);
-		
-		this.scene = new THREE.Scene;
-		
-		this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-		this.camera.position.set(0, 0, 400);
-		this.camera.lookAt(0, 0, 0);		
-		
-		var spotLight = new THREE.SpotLight(0xffffff);
-		spotLight.position.set(600, 600, 600);
-		this.scene.add(spotLight);*/
-		
-		//window.addEventListener("onresize",this.bind("windowResize"));
+		window.addEventListener("resize",this.bind("windowResize"))
 	}
 
 	async startGame() {
@@ -53,14 +24,17 @@ class Game {
 		}
 	}
 
+	getScreen() {
+		return this.app.screen;
+	}
+
 	update(dt) {
+		if(this.dialogue) this.dialogue.update(dt);
 		if(this.world) this.world.update(dt)
 	}
 
 	createCharacter() {
-		this.dialogue = new DrawCharacterScreen;
-		this.dialogue.x = this.app.screen.width/2-this.dialogue.width/2;
-		this.dialogue.y = this.app.screen.height/2-this.dialogue.height/2;
+		this.dialogue = new DrawCharacterScreen("Draw a character");
 		this.app.addChild(this.dialogue);
 	}
 
@@ -75,5 +49,10 @@ class Game {
 
 	mouseUp(e) {
 		if(this.dialogue) this.dialogue.mouseUp(e);
+	}
+
+	windowResize(e) {
+		this.app.resizeTo= document.body
+		this.app.resize();
 	}
 }

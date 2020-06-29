@@ -20,8 +20,8 @@ class DrawSpace extends PIXI.Container {
 		}
 		this.stopDrawing();
 		this.stage.update();
-		this.width = 500
-		this.height = 500;
+		this.width = 500;
+		this.height = this.width*h/w;
 	}
 	setSize(h,w) {
 		this.stage.canvas.width = w;
@@ -62,6 +62,16 @@ class DrawSpace extends PIXI.Container {
 		return new Promise((resolve,reject)=>{
 			this.stage.canvas.toBlob(resolve,'image/png',1);
 		})
+	}
+
+	update(dt) {
+		if(window.innerWidth<500) {
+			this.width = window.innerWidth;
+		} else {
+			this.width = 500;
+		}
+		this.height = this.width*this.stage.canvas.height/this.stage.canvas.width;
+
 	}
 
 	destroy() {
