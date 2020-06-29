@@ -18,14 +18,48 @@ class DrawCharacterScreen extends PIXI.Container {
 		this.title.y = this.margin;
 
 		//Buttons
-		this.submit = new Button({text:"Submit",action:game.bind("startGame"),color:"green",margin:20})
+		this.submit = new Button({text:"Submit",action:game.bind("startGame"),color:GameColors.azure,margin:20})
 		centerTo(this.submit,game.getScreen());
 		this.submit.y = game.getScreen().height-this.margin-this.submit.height;
 		this.addChild(this.submit)
+
+		//Pallet
+		var pallet = new PIXI.Container;
+		this.addChild(pallet);
+		var pen=this.drawingSpace.pen;
+		var i=0;
+		for(var color in GameColors) {
+			var btn = new Button({
+				text:"hi",
+				action:(function(){
+					pen.color=numberToColor(this.color);
+				}),
+				color:GameColors[color]
+			})
+			btn.width = btn.height = 50;
+			this.updatePalletColor(btn,i++);
+			pallet.addChild(btn);
+		}
+		this.pallet = pallet;
+		centerTo(this.pallet,game.getScreen())
+
+	}
+
+	updatePalletColor(btn,i) {
+		var x=Math.round(i*btn.width);
+		btn.x = x%this.drawingSpace.width;
+		btn.y = Math.floor(x/this.drawingSpace.width)*btn.height;
 	}
 
 	update(dt) {
 		this.drawingSpace.update();
+
+		var i=0;
+		for(var btn of this.pallet.children) {
+			this.updatePalletColor(btn,i++);
+		}
+		centerTo(this.pallet,game.getScreen())
+		this.pallet.y = game.getScreen().height/2+this.drawingSpace.height/2
 
 		this.margin = 50/1080*window.innerHeight;
 		centerTo(this.title,game.getScreen());

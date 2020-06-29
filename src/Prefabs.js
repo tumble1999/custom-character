@@ -9,9 +9,9 @@ var GameColors = {
 	azure: 0x007fff,
 	blue: 0x0000ff,
 	violet: 0x7f00ff,
-	magenta: 0xff00ff,
-	rose: 0xff007f,
-	white:0xffffff,
+	black:0x000000,
 	grey:0x808080,
-	black:0x000000
+	white:0xffffff,
+	rose: 0xff007f,
+	magenta: 0xff00ff
 };

@@ -16,6 +16,11 @@ function centerTo(a,b) {
 	a.y = b.height/2-a.height/2
 }
 
+function numberToColor(n){
+	var colorStr = n.toString(16)
+	return ("#000000").substr(0,7-colorStr.length)+colorStr;
+}
+
 
 function lerpXY(a, b, t) {
 	return {
