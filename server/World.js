@@ -33,9 +33,10 @@ class World {
 		return player;
 	}
 
-	removePlayer(id) {
+	removePlayer(client,id) {
 		delete this.players[id];
 		console.log("removePlayer",id)
+		this.emitToRoom(client,"removePlayer",id);
 	}
 
 	movePlayer(client,info) {
