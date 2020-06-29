@@ -1,8 +1,8 @@
 class Player {
-	constructor(id,name,textureBlob) {
-		this.id = id;
-		this.name = name;
-		this.textureBlob = textureBlob;
+	constructor(playerInfo) {
+		this.id = playerInfo.id;
+		this.name = playerInfo.name;
+		this.textureBlob = playerInfo.textureBlob;
 		this.x = 0;
 		this.y = 0;
 	}

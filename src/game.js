@@ -17,11 +17,32 @@ class Game {
 	}
 
 	update(dt) {
-		if(this.dialogue) this.dialogue.update(dt);
-		if(this.world) this.world.update(dt)
+		if(this.dialogue&&this.dialogue.update) this.dialogue.update(dt);
+		if(this.world&&this.world.update) this.world.update(dt)
 	}
 	
-	login() {
+	startGame(ip) {
+		if(this.dialogue) {
+			this.dialogue.destroy();
+			delete this.dialogue;
+		}
+		var socket = io(ip);
+		this.socket = socket;
+		this.dialogue = new BorderText("Connecting To Server...",{fontSize:60})
+		centerTo(this.dialogue,this.getScreen());
+		this.app.addChild(this.dialogue);
+
+		socket.on("connect",this.bind("connectedToServer"));
+	}
+
+	connectedToServer() {
+		if(this.dialogue) {
+			this.dialogue.destroy();
+			delete this.dialogue;
+		}
+		console.log("Connected To Server");
+
+		//UserName
 		this.dialogue = new EnterTextScreen("Enter Username",this.bind("createCharacter"));
 		this.app.addChild(this.dialogue);
 	}
@@ -32,11 +53,11 @@ class Game {
 			this.dialogue.destroy();
 			delete this.dialogue;
 		}
-		this.dialogue = new DrawCharacterScreen("Draw a character",this.bind("startGame"));
+		this.dialogue = new DrawCharacterScreen("Draw a character",this.bind("login"));
 		this.app.addChild(this.dialogue);
 	}
 
-	async startGame() {
+	async login() {
 		if(this.dialogue) {
 			this.playerInfo.textureBlob = await this.dialogue.drawingSpace.createBlob();
 			this.dialogue.destroy({children:true});
@@ -45,8 +66,18 @@ class Game {
 		this.world = new World();
 		this.app.addChild(this.world)
 		if(this.playerInfo) {
-			this.player = this.world.addPlayer(this.playerInfo);
+			//this.player = this.world.addPlayer(this.playerInfo);
+			this.emit("joinGame",this.playerInfo);
 		}
+	}
+
+	//Socket Utils
+	emit(...a) {
+		this.socket&&(this.socket.emit(...a));
+	}
+
+	on(...a) {
+		this.socket&&(this.socket.on(...a))
 	}
 
 	mouseDown(e) {

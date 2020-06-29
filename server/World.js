@@ -17,18 +17,32 @@ class World {
 		this.socket.emit(...a);
 	}
 
-	joinServer(socket) {
-		new Client(socket);
+	emitToRoom(client,...a) {
+		client.socket.to(this.name).emit(...a);
 	}
 
-	addPlayer(id,name,textureBlob) {
-		var player = new Player(id,name,textureBlob);
-		this.players[id] = player;
+	joinServer(socket) {
+		new Client(this,socket);
+	}
+
+	addPlayer(client,playerInfo) {
+		var player = new Player(playerInfo);
+		this.players[playerInfo.id] = player;
+		this.emitToRoom(client,"addPlayer",playerInfo);
+		client.join(this.name);
 		return player;
 	}
 
 	removePlayer(id) {
-		delete player[id];
+		delete this.players[id];
+		console.log("removePlayer",id)
+	}
+
+	movePlayer(client,info) {
+		var player = this.players[info.id];
+		player.x = info.x;
+		player.y = info.y;
+		this.emitToRoom(client,"movePlayer",info);
 	}
 }
 

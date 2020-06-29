@@ -4,8 +4,8 @@ function createBinder(instance) {
 	}).bind(instance);
 }
 
-function blobFromBytes(bytes) {
-	return new Blob([bytes.buffer],{type:"image/png"});
+function blobFromBytes(buffer) {
+	return new Blob([buffer],{type:"image/png"});
 }
 
 function centerTo(a,b) {

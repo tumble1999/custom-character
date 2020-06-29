@@ -1,7 +1,6 @@
-class EnterTextScreen extends PIXI.Container {
+class EnterTextScreen extends DialoguePrompt {
 	constructor(prompt,submit) {
-		super();
-		this.bind = createBinder(this);
+		super(prompt,submit);
 		this.submit = submit;
 		this.textInput = new PIXI.TextInput({
 			input: {
@@ -20,40 +19,11 @@ class EnterTextScreen extends PIXI.Container {
 		centerTo(this.textInput,game.getScreen());
 		this.addChild(this.textInput);
 
-		this.margin = 50/1080*window.innerHeight;
-
-		//Prompt
-		this.title = new BorderText(prompt,{
-			fill:GameColors.white,
-			fontSize:50
-		})
-		this.addChild(this.title);
-		centerTo(this.title,game.getScreen());
-		this.title.y = this.margin;
-
-		//Buttons
-		this.submit = new Button({text:"Submit",action:this.bind("submit"),color:GameColors.azure,margin:20})
-		centerTo(this.submit,game.getScreen());
-		this.submit.y = game.getScreen().height-this.margin-this.submit.height;
-		this.addChild(this.submit)
-
 	}
 
 	update(dt) {
-		this.margin = 50/1080*window.innerHeight;
-		centerTo(this.title,game.getScreen());
-		this.title.y = this.margin;	
 		centerTo(this.textInput,game.getScreen());
-		centerTo(this.submit,game.getScreen());
-		this.submit.y = game.getScreen().height-this.margin-this.submit.height;
-	}
-	mouseDown(e) {
-	}
-
-	mouseMove(e) {
-	}
-
-	mouseUp(e) {
+		super.update(dt);
 	}
 
 }
