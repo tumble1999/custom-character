@@ -1,5 +1,5 @@
 class DrawCharacterScreen extends PIXI.Container {
-	constructor(prompt) {
+	constructor(prompt,submit) {
 		super();
 		this.bind = createBinder(this);
 		this.drawingSpace = new DrawSpace(100, 100);
@@ -18,7 +18,7 @@ class DrawCharacterScreen extends PIXI.Container {
 		this.title.y = this.margin;
 
 		//Buttons
-		this.submit = new Button({text:"Submit",action:game.bind("startGame"),color:GameColors.azure,margin:20})
+		this.submit = new Button({text:"Submit",action:submit,color:GameColors.azure,margin:20})
 		centerTo(this.submit,game.getScreen());
 		this.submit.y = game.getScreen().height-this.margin-this.submit.height;
 		this.addChild(this.submit)

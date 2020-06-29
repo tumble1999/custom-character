@@ -1,2 +1,2 @@
 var game = new Game;
-game.createCharacter();
+game.login();

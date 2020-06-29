@@ -13,10 +13,11 @@ class World extends PIXI.Container {
 		game.player.moveTo(e.pageX, e.pageY,0)
 	}
 
-	addPlayer(id,name,textureBlob) {
-		if(this.players[id]) return;
-		this.players[id] = new Player(id,name,textureBlob);
-		this.addChild(this.players[id]);
-		return this.players[id];
+	addPlayer(info) {
+		if(this.players[info.id||info.name]) return;
+		var player = new Player(info);
+		this.players[info.id||info.name] = player;
+		this.addChild(player);
+		return player;
 	}
 }

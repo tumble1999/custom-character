@@ -1,14 +1,14 @@
 class Player extends PIXI.Sprite {
-	constructor(id,name, textureBlob) {
-		super(PIXI.Texture.from(URL.createObjectURL(textureBlob)));
+	constructor(info) {
+		super(PIXI.Texture.from(URL.createObjectURL(info.textureBlob)));
 		this.x = game.app.screen.width/2
 		this.y = game.app.screen.height/2
-		this.playerId = id;
-		this.name = name;
+		this.playerId = info.id;
+		this.name = info.name;
 		this.speed = 3;
 		this.destination = {x:this.x,y:this.y};
 
-		this.nicknameSprite = new BorderText(name);
+		this.nicknameSprite = new BorderText(this.name);
 		this.addChild(this.nicknameSprite)
 	}
 
