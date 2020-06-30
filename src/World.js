@@ -8,6 +8,7 @@ class World extends PIXI.Container {
 		this.bindSocket("addPlayer")
 		this.bindSocket("removePlayer")
 		this.bindSocket("movePlayer")
+		this.bindSocket("updateRooms")
 	}
 
 	bindSocket(name) {
@@ -57,5 +58,9 @@ class World extends PIXI.Container {
 
 	movePlayer(info) {
 		this.players[info.id].moveTo(info)
+	}
+
+	updateRooms(info) {
+		
 	}
 }
