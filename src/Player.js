@@ -1,8 +1,8 @@
 class Player extends PIXI.Sprite {
 	constructor(info) {
 		super(PIXI.Texture.from(URL.createObjectURL(info.textureBlob)));
-		this.x = info.x||-10090;
-		this.y = info.y||-1000;
+		this.x = info.x;
+		this.y = info.y;
 		this.playerId = info.id;
 		this.name = info.name;
 		this.speed = 3;
