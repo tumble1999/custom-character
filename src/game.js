@@ -10,6 +10,13 @@ class Game {
 		window.addEventListener("mouseup", this.bind("mouseUp"));
 		window.addEventListener("mousemove",this.bind("mouseMove"));
 		window.addEventListener("resize",this.bind("windowResize"))
+		window.addEventListener("mousewheel",e=>{
+			if(e.altKey) {
+				game.world.x -= e.deltaY;
+			} else {
+				game.world.y -= e.deltaY;
+			}
+		})
 	}
 
 	getScreen() {
@@ -36,6 +43,13 @@ class Game {
 	}
 
 	connectedToServer() {
+		if(this.world) {
+			this.world.destroy({children:true});
+			delete this.player;
+			delete this.room;
+			this.playerInfo = {};
+			delete this.world;
+		}
 		if(this.dialogue) {
 			this.dialogue.destroy();
 			delete this.dialogue;
@@ -81,6 +95,11 @@ class Game {
 	}
 
 	mouseDown(e) {
+		if(e.which == 2) {
+			game.world.x =0;
+			game.world.y =0;
+			return
+		}
 		if(this.dialogue&&this.dialogue.mouseDown)this.dialogue.mouseDown(e);
 		if(this.world&&this.world.mouseDown) this.world.mouseDown(e);
 	}

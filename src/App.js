@@ -3,6 +3,8 @@ class App extends PIXI.Application {
 		super({
 			width: w, height: h, backgroundColor: bg, resolution: window.devicePixelRatio || 1,
 		});
+		this.view.width = w;
+		this.view.height = h
 	}
 
 	domElement() {

@@ -1,8 +1,8 @@
 class Player extends PIXI.Sprite {
 	constructor(info) {
 		super(PIXI.Texture.from(URL.createObjectURL(info.textureBlob)));
-		this.x = info.x||game.app.screen.width/2
-		this.y = info.y||game.app.screen.height/2
+		this.x = info.x||-10090;
+		this.y = info.y||-1000;
 		this.playerId = info.id;
 		this.name = info.name;
 		this.speed = 3;
@@ -10,6 +10,13 @@ class Player extends PIXI.Sprite {
 
 		this.nicknameSprite = new BorderText(this.name);
 		this.addChild(this.nicknameSprite)
+	}
+
+	updateInfo(info) {
+		var dif = subVec({x:this.x,y:this.y},this.destination)
+		this.x = info.x+dif[0];
+		this.y = info.y+dif[1];
+		this.destination = {x:info.x,y:info.y};
 	}
 
 	update() {

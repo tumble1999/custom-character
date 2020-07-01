@@ -58,6 +58,7 @@ class World {
 		var players = Object.values(this.players).filter(p=>minX<=p.x&&p.x<maxX&&minY<=p.y&&p.y<maxY).map(p=>{
 			p.x -= minX;
 			p.y -= minY;
+			return p;
 		});
 		return {
 			name:minX/ROOM_SIZE + "-" + minY/ROOM_SIZE,
@@ -72,13 +73,13 @@ class World {
 		var roomX = Math.floor(player.x/ROOM_SIZE);
 		var roomY = Math.floor(player.y/ROOM_SIZE);
 
-		var rooms = {
-			current:this.getRoom(roomX,roomY),
-			north:this.getRoom(roomX,roomY-1),
-			south:this.getRoom(roomX,roomY+1),
-			west:this.getRoom(roomX-1,roomY),
-			east:this.getRoom(roomX+1,roomY),
-		}
+		var rooms = [
+			this.getRoom(roomX,roomY),
+			this.getRoom(roomX,roomY-1),
+			this.getRoom(roomX,roomY+1),
+			this.getRoom(roomX-1,roomY),
+			this.getRoom(roomX+1,roomY),
+		]
 		return rooms;
 	}
 }

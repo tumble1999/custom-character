@@ -29,8 +29,8 @@ class Client {
 
 	leaveAll() {
 		var rooms = this.getSocketRooms();;
-		for(var room in rooms) {
-			this.socket.leave(room);
+		for(var room of rooms) {
+			this.leave(room);
 		}
 	}
 
@@ -72,6 +72,7 @@ class Client {
 	movePlayer(info) {
 		if(!this.player) return;
 		info.id = this.player.id;
+		info.room = this.room;
 		this.world.movePlayer(this,info);
 		this.updateRooms(true);
 	}
@@ -81,9 +82,10 @@ class Client {
 		
 		var roomNames = Object.values(rooms).map(r=>r.name);
 		var socketRooms = this.getSocketRooms();
+		console.log(roomNames,socketRooms)
 
 		if(!arraysEqual(roomNames,socketRooms)){
-			this.room = rooms.current.name;
+			this.room = rooms[0].name;
 			this.leaveAll();
 			for(var room of roomNames) {
 				this.join(room);
