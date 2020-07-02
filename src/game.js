@@ -101,7 +101,7 @@ class Game {
 
 	async login() {
 		if(this.dialogue) this.cleanDialogue()
-		this.data.characters.default = await this.loadFile("/media/default.png")
+		this.data.characters.default = await this.loadFile("media/default.png")
 		this.world = new World();
 		this.app.addChild(this.world)
 		if(this.info) {

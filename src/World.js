@@ -64,7 +64,7 @@ class World extends PIXI.Container {
 
 	async joinMap(info) {
 		game.info.map = info.map;
-		game.data.maps[info.map] = await game.loadFile("/data/maps/" + info.map + ".json")
+		game.data.maps[info.map] = await game.loadFile("data/maps/" + info.map + ".json")
 		await this.joinSector(info);
 	}
 
