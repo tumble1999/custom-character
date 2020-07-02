@@ -2,6 +2,11 @@ class Game {
 	constructor() {
 		this.bind = createBinder(this);
 		this.touchHandler = new TouchHandler();
+		this.loader = new PIXI.Loader();
+		this.data = {
+			maps:{},
+			characters:{}
+		};
 		this.app = new App(window.innerWidth, window.innerHeight,"#000000");
 		this.info = {};
 		document.body.appendChild(this.app.domElement())
@@ -18,7 +23,6 @@ class Game {
 			}
 		})
 	}
-
 	getScreen() {
 		return this.app.screen;
 	}
@@ -26,6 +30,18 @@ class Game {
 	update(dt) {
 		if(this.dialogue&&this.dialogue.update) this.dialogue.update(dt);
 		if(this.world&&this.world.update) this.world.update(dt)
+	}
+
+	async loadFile(path) {
+		var g = this;
+		return new Promise((resolve,reject)=>{
+			g.loader.add(path);
+			g.loader.load((loader,resources)=> {
+				resolve(resources[path].data);
+				console.log("File Loaded",path)
+			});		
+
+		})
 	}
 	
 	startGame(ip) {
@@ -57,26 +73,35 @@ class Game {
 		console.log("Connected To Server");
 
 		//UserName
-		this.dialogue = new EnterTextScreen("Enter Username",this.bind("createCharacter"));
+		this.dialogue = new EnterTextScreen("Enter Username",
+		//this.bind("createCharacter")
+		this.bind("login")
+		);
 		this.app.addChild(this.dialogue);
 	}
 
-	createCharacter() {
-		if(this.dialogue) {
-			this.info.name = this.dialogue.textInput.text;
-			this.dialogue.destroy();
-			delete this.dialogue;
-		}
+	async createCharacter() {
+		if(this.dialogue) await this.cleanDialogue()
 		this.dialogue = new DrawCharacterScreen("Draw a character",this.bind("login"));
 		this.app.addChild(this.dialogue);
 	}
 
-	async login() {
-		if(this.dialogue) {
-			this.info.textureBlob = await this.dialogue.drawingSpace.createBlob();
-			this.dialogue.destroy({children:true});
-			delete this.dialogue;
+	async cleanDialogue() {
+		var children = true;
+		if(this.dialogue.textInput){
+			this.info.name = this.dialogue.textInput.text;
+			children = false;
 		}
+		if(this.dialogue.drawingSpace){
+			this.info.textureBlob = await this.dialogue.drawingSpace.createBlob();
+		}
+		this.dialogue.destroy({children});
+		delete this.dialogue;
+	}
+
+	async login() {
+		if(this.dialogue) this.cleanDialogue()
+		this.data.characters.default = await this.loadFile("/media/default.png")
 		this.world = new World();
 		this.app.addChild(this.world)
 		if(this.info) {

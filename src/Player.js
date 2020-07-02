@@ -5,6 +5,7 @@ class Player extends PIXI.Container {
 		this.id = info.id;
 		this.name = info.name;
 		this.destination = {x:this.x,y:this.y};
+		this.moving = false;
 
 		this.nicknameSprite = new BorderText(this.name);
 		this.addChild(this.nicknameSprite)
@@ -19,12 +20,18 @@ class Player extends PIXI.Container {
 		}
 	}
 
-	updateInfo(info) {
+	async updateInfo(info) {
 		for(var i in info) {
 			this.info[i] = info[i];
 		}
 		if(!this.character) {
-			this.character = new PIXI.Sprite(PIXI.Texture.from(URL.createObjectURL(info.textureBlob)));
+			this.character = new PIXI.Sprite(
+				PIXI.Texture.from(
+					info.textureBlob?
+					URL.createObjectURL(info.textureBlob):
+					game.data.characters.default
+				)
+			);
 			this.addChild(this.character);
 		} else {
 			this.character.texture = PIXI.Texture.from(URL.createObjectURL(info.textureBlob))
@@ -43,7 +50,7 @@ class Player extends PIXI.Container {
 		var pos = moveTowards({x:this.x,y:this.y},this.destination,this.speed);
 		this.x = pos.x;
 		this.y = pos.y;
-
+		this.moving = !(this.x==this.destination.x&&this.y==this.destination.y);
 		centerTo(this.nicknameSprite,this);
 		this.nicknameSprite.y = 0
 	}

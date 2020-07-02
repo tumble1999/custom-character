@@ -1,0 +1,8 @@
+{
+	"0-0": {
+		"background":"/media/maps/overworld/0-0/background.png",
+		"collisionMap":"/media/maps/overworld/0-0/collision.png",
+		"warpMap":[],
+		"warps":[]
+	}
+}

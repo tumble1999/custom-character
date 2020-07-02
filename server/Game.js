@@ -4,7 +4,7 @@ var Player = require('./Player');
 const { SOCKET,RESET,PLAYER,MAP,SECTOR } = require('./ColorLog');
 const { platform } = require('os');
 
-var SECTOR_SIZE = 4096;
+var SECTOR_SIZE = 2048;
 
 class Game {
 	constructor(httpServer) {
@@ -30,6 +30,10 @@ class Game {
 		});
 
 		return [
+			getSector(x+1,y-1),//North-West
+			getSector(x-1,y+1),//South-East
+			getSector(x+1,y+1),//South-West
+			getSector(x-1,y-1),//North-East
 			getSector(x,y-1),//North
 			getSector(x,y+1),//South
 			getSector(x-1,y),//West
@@ -51,7 +55,9 @@ class Game {
 		d = p=>p.sector.y==sector.y-1,
 		e = p=>p.sector.y==sector.y,
 		f = p=>p.sector.y==sector.y+1,
-		filter = p=>e(p)&&(a(p)||c(p))||b(p)&&(d(p)||e(p)||f(p));
+		filter = p=>
+		(a(p)||b(p)||c(p))&&
+		(d(p)||e(p)||f(p));
 		return Object.values(this.players).filter(filter);
 	}
 

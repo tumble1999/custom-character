@@ -55,19 +55,20 @@ class World extends PIXI.Container {
 		game.player.moveTo(pos)
 	}
 
-	joinGame(info) {
+	async joinGame(info) {
 		game.info.id = info.id;
 		game.info.server = info.server;
 		game.info.SECTOR_SIZE = info.SECTOR_SIZE;
-		this.joinMap(info);
+		await this.joinMap(info);
 	}
 
-	joinMap(info) {
+	async joinMap(info) {
 		game.info.map = info.map;
-		this.joinSector(info);
+		game.data.maps[info.map] = await game.loadFile("/data/maps/" + info.map + ".json")
+		await this.joinSector(info);
 	}
 
-	joinSector(info) {
+	async joinSector(info) {
 		game.info.sector = info.sector;
 		game.info.players = info.players;
 		game.info.sectors = info.sectors;

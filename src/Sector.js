@@ -7,6 +7,10 @@ class Sector extends PIXI.Container {
 		this.x = info.x;
 		this.y = info.y;
 		this.players = {};
+		if(game.data.maps[game.info.map]) {
+			this.data = game.data.maps[game.info.map][this.id]
+			this.loadData();
+		}
 
 		
 		this.background = PIXI.Sprite.from(PIXI.Texture.WHITE);
@@ -14,7 +18,14 @@ class Sector extends PIXI.Container {
 		this.background.width = this.background.height = game.info.SECTOR_SIZE;
 		this.addChild(this.background);
 
+
 		this.updatePlayers()
+	}
+
+	async loadData() {
+
+		this.collision = await game.loadFile(this.data.collisionMap)
+
 	}
 
 	update(dt) {
