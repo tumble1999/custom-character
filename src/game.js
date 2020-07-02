@@ -3,7 +3,7 @@ class Game {
 		this.bind = createBinder(this);
 		this.touchHandler = new TouchHandler();
 		this.app = new App(window.innerWidth, window.innerHeight,"#000000");
-		this.playerInfo = {};
+		this.info = {};
 		document.body.appendChild(this.app.domElement())
 		this.app.onUpdate(this.bind("update"));
 		window.addEventListener("mousedown", this.bind("mouseDown"));
@@ -46,8 +46,8 @@ class Game {
 		if(this.world) {
 			this.world.destroy({children:true});
 			delete this.player;
-			delete this.room;
-			this.playerInfo = {};
+			delete this.sector;
+			this.info = {};
 			delete this.world;
 		}
 		if(this.dialogue) {
@@ -63,7 +63,7 @@ class Game {
 
 	createCharacter() {
 		if(this.dialogue) {
-			this.playerInfo.name = this.dialogue.textInput.text;
+			this.info.name = this.dialogue.textInput.text;
 			this.dialogue.destroy();
 			delete this.dialogue;
 		}
@@ -73,15 +73,14 @@ class Game {
 
 	async login() {
 		if(this.dialogue) {
-			this.playerInfo.textureBlob = await this.dialogue.drawingSpace.createBlob();
+			this.info.textureBlob = await this.dialogue.drawingSpace.createBlob();
 			this.dialogue.destroy({children:true});
 			delete this.dialogue;
 		}
 		this.world = new World();
 		this.app.addChild(this.world)
-		if(this.playerInfo) {
-			//this.player = this.world.addPlayer(this.playerInfo);
-			this.emit("joinGame",this.playerInfo);
+		if(this.info) {
+			this.emit("joinGame",this.info);
 		}
 	}
 

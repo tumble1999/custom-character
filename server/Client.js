@@ -1,36 +1,41 @@
-const {createBinder,arraysEqual} = require('./Util')
+const {createBinder,arraysEqual} = require('./Util');
+const { SOCKET,RESET } = require('./ColorLog');
+
 
 class Client {
-	constructor(world,socket) {
+	constructor(game,socket) {
 		this.bind = createBinder(this);
 		this.socket = socket;
-		this.world = world;
+		this.game = game;
 		this.name = this.getID();
 
 		this.emit("connect");
 		this.bindSocket("disconnect")
 		this.bindSocket("joinGame")
 		this.bindSocket("movePlayer")
-		console.log("Client Connected:", this.name);
+		console.log("Client Connected:", SOCKET+this.name+RESET);
 	}
 	getID() {
 		return this.socket.id;
 	}
+	
+	getSocketRooms() {
+		return Object.keys(this.socket.rooms).filter(r=>r!==this.getID())
+	}
 
 	join(a) {
 		this.socket.join(a);
-		console.log(this.name,"has joined",a);
+		console.log(SOCKET+this.getID()+RESET,"has joined",a);
 	}
-
 	leave(a) {
 		this.socket.leave(a);
-		console.log(this.name,"has left",a);
+		console.log(SOCKET+this.getID()+RESET,"has left",a);
 	}
 
-	leaveAll() {
+	leaveAll(filter=()=>true) {
 		var rooms = this.getSocketRooms();;
 		for(var room of rooms) {
-			this.leave(room);
+			if(filter(room))this.leave(room);
 		}
 	}
 
@@ -38,60 +43,31 @@ class Client {
 		this.socket.emit(...a);
 	}
 
-	getSocketRooms() {
-		return Object.keys(this.socket.rooms).filter(r=>r!==this.getID())
-	}
-
 	bindSocket(name) {
 		var t = this;
 		this.socket.on(name,(...p)=>{
-			console.log(t.name,name,...p)
+			console.log(SOCKET+t.getID()+RESET,name,...p)
 			this.bind(name)(...p)
 		});
 	}
+
 	disconnect() {
-		this.world.removePlayer(this,this.getID())
-		console.log("Client Disconnected:", this.name);
+		this.game.leaveGame(this)
+		console.log("Client Disconnected:",SOCKET+this.name+RESET);(this)
 	}
 
 	joinGame(info) {
 		this.name = info.name;
 		info.id = this.getID();
-		var {player,rooms} = this.world.addPlayer(this,info);
-		this.player = player;
-		this.updateRooms(false);
-		this.emit("joinGame",{
-			id:info.id,
-			server:this.world.name,
-			room:this.room,
-			rooms,
-			players:Object.values(this.world.players)
-		});
+		info = this.game.joinGame(this,info);
+		this.emit("joinGame",info);
 	}
 
 	movePlayer(info) {
 		if(!this.player) return;
 		info.id = this.player.id;
-		info.room = this.room;
-		this.world.movePlayer(this,info);
-		this.updateRooms(true);
-	}
-
-	updateRooms(emit=true) {
-		var rooms = this.world.getClientRooms(this);
-		
-		var roomNames = Object.values(rooms).map(r=>r.name);
-		var socketRooms = this.getSocketRooms();
-		console.log(roomNames,socketRooms)
-
-		if(!arraysEqual(roomNames,socketRooms)){
-			this.room = rooms[0].name;
-			this.leaveAll();
-			for(var room of roomNames) {
-				this.join(room);
-			}
-			if(emit) this.emit("updateRooms",rooms)
-		}
+		info.sector = this.sector;
+		this.game.movePlayer(this,info);
 	}
 }
 

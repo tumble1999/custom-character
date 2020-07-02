@@ -2,14 +2,15 @@ class World extends PIXI.Container {
 	constructor() {
 		super();
 		this.bind = createBinder(this);
-		this.rooms = {};
-		//this.players = {};
+		this.sectors = {};
+		this.players = {}
 
 		this.bindSocket("joinGame")
+		this.bindSocket("joinMap")
+		this.bindSocket("joinSector")
 		this.bindSocket("addPlayer")
 		this.bindSocket("removePlayer")
 		this.bindSocket("movePlayer")
-		this.bindSocket("updateRooms")
 	}
 
 	bindSocket(name) {
@@ -21,82 +22,104 @@ class World extends PIXI.Container {
 	}
 
 	screenToWorld(pos) {
-		var playerPos = game.room?game.room.roomToWorld(game.player):game.player;
+		var playerPos = game.sector?game.sector.sectorToWorld(game.player):game.player;
 		return {
 			x:pos.x-game.getScreen().width/2+playerPos.x,
 			y:pos.y-game.getScreen().height/2+playerPos.y
 		}
 	}
 	worldToScreen(pos) {
-		var playerPos = game.room?game.room.roomToWorld(game.player):game.player;
+		var playerPos = game.sector?game.sector.sectorToWorld(game.player):game.player;
 		return {
 			x:pos.x-playerPos.x+game.getScreen().width/2,
 			y:pos.y-playerPos.y+game.getScreen().height/2
 		}
 	}
 
+	getSectorName({x,y}) {
+		return x+"-"+y;
+	}
+
 	update(dt) {
-		//Object.values(this.players).forEach(p=>p.update(dt));
-		Object.values(this.rooms).forEach(p=>p.update(dt));
+		Object.values(this.sectors).forEach(p=>p.update(dt));
 	}
 
 	mouseDown(e) {
-		var pos = this.screenToWorld({x:e.pageX,y:e.pageY})
+		/*var pos = this.screenToWorld({x:e.pageX,y:e.pageY})
+		pos = game.sector.worldToSector(pos);*/
+		var pos = {
+			x:e.pageX-game.getScreen().width/2+game.player.x,
+			y:e.pageY-game.getScreen().height/2+game.player.y
+		}
 		game.emit("movePlayer",pos)
-		pos = game.room.worldToRoom(pos);
 		game.player.moveTo(pos)
 	}
 
 	joinGame(info) {
-		game.playerInfo.id = info.id;
-		game.playerInfo.room = info.room;
-		this.updateRooms(info.rooms);
+		game.info.id = info.id;
+		game.info.server = info.server;
+		game.info.SECTOR_SIZE = info.SECTOR_SIZE;
+		this.joinMap(info);
 	}
 
-	/*addPlayer(info) {
-		if(this.players[info.id||info.name]) return;
-		info.textureBlob = blobFromBytes(info.textureBlob);
-		var player = new Player(info);
-		this.players[info.id||info.name] = player;
-		this.addChild(player);
-		return player;
+	joinMap(info) {
+		game.info.map = info.map;
+		this.joinSector(info);
+	}
+
+	joinSector(info) {
+		game.info.sector = info.sector;
+		game.info.players = info.players;
+		game.info.sectors = info.sectors;
+
+		for(var sector in this.sectors) {
+			if(!info.sectors.map(r=>r.name).includes(sector)){
+				this.removeSector(sector);
+			}
+		}
+		for(var s of info.sectors) {
+			var sector = this.addSector(s);
+			if(game.info.sector==s.name) {
+				game.sector = sector;
+				this.removeChild(sector);
+				this.addChild(sector);
+			}
+		}
+	}
+
+	addSector(info) {
+		if(this.sectors[info.name]) {
+			this.sectors[info.name].updatePlayers(info.players);
+			return this.sectors[info.name];
+		};
+		var sector = new Sector(info);
+		this.sectors[info.name] = sector;
+		this.addChild(sector);
+		return sector;
+	}
+
+	removeSector(id) {
+		this.removeChild(this.sectors[id])
+		this.sectors[id].destroy({children:true});
+		delete this.sectors[id];
+
+	}
+
+	addPlayer(info) {
+		if(!game.info.players.map(i=>i.id).includes(info.id)) {
+			game.info.players.push(info);
+		}
+		this.sectors[this.getSectorName(info.sector)].addPlayer(info)
 	}
 	
-	removePlayer(id) {
-		this.players[id].destroy({children:true});
-		delete this.players[id];
-	}*/
-
-	addRoom(info) {
-		if(this.rooms[info.name]) {
-			this.rooms[info.name].updatePlayers(info.players);
-			return this.rooms[info.name];
-		};
-		var room = new Room(info);
-		this.rooms[info.name] = room;
-		this.addChild(room);
-		return room;		
+	removePlayer(info) {
+		if(game.info.players.map(i=>i.id).includes(info.id)) {
+			game.info.player = game.info.players.filter(p=>p!=info.id)
+		}
+		this.sectors[info.sector].removePlayer(info.id);
 	}
 
 	movePlayer(info) {
-		//this.players[info.id].moveTo(info)
-		this.rooms[info.room].movePlayer(info);
-	}
-
-	updateRooms(rooms) {
-		game.playerInfo.room = rooms[0].name;
-		for(var room in this.rooms) {
-			if(!rooms.map(r=>r.name).includes(room)){
-				this.rooms[room].destroy({children:true});
-				delete this.rooms[room];
-			}
-		}
-		for(var r of rooms) {
-			var room = this.addRoom(r);
-			if(game.playerInfo.room==r.name) {
-				game.room = room;
-			}
-		}
-		
+		this.sectors[info.sector].movePlayer(info);
 	}
 }
