@@ -7,14 +7,17 @@ class Sector extends PIXI.Container {
 		this.x = info.x;
 		this.y = info.y;
 		this.players = {};
-		if(game.data.maps[game.info.map]) {
+		if(game.data.maps[game.info.map][this.id]) {
 			this.data = game.data.maps[game.info.map][this.id]
 			this.loadData();
 		}
 
-		
-		this.background = PIXI.Sprite.from(PIXI.Texture.WHITE);
-		this.background.tint = info.x*0x10000+info.y*0x100+0xff;
+		if(this.data&&this.data.background) {
+			this.background = PIXI.Sprite.from(PIXI.Texture.from(this.data.background));
+		} else {
+			this.background = PIXI.Sprite.from(PIXI.Texture.WHITE);
+			this.background.tint = info.x*0x10000+info.y*0x100+0xff;
+		}
 		this.background.width = this.background.height = game.info.SECTOR_SIZE;
 		this.addChild(this.background);
 
@@ -24,7 +27,7 @@ class Sector extends PIXI.Container {
 
 	async loadData() {
 
-		this.collision = await game.loadFile(this.data.collisionMap)
+		//this.collision = await game.loadFile(this.data.collisionMap)
 
 	}
 

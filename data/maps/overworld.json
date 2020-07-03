@@ -4,5 +4,14 @@
 		"collisionMap":"media/maps/overworld/0-0/collision.png",
 		"warpMap":[],
 		"warps":[]
+	},
+	"0-1": {
+		"background":"media/maps/overworld/0-1/background.png"
+	},
+	"1-0": {
+		"background":"media/maps/overworld/1-0/background.png"
+	},
+	"1-1": {
+		"background":"media/maps/overworld/1-1/background.png"
 	}
 }
