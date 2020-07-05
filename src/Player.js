@@ -43,7 +43,7 @@ class Player extends PIXI.Container {
 	updateFloatAnimation() {
 		var speed = this.animation.speed;
 		if(this.moving) {
-			speed *= this.speed*1.5;
+			speed *= this.speed;
 		}
 		var time = performance.now()*speed/this.animation.yMax;
 		this.character.y = (Math.sin(time)-1)*this.animation.yMax;
