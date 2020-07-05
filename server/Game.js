@@ -154,7 +154,6 @@ class Game {
 		player.y = (info.y+SECTOR_SIZE)%SECTOR_SIZE;
 		player.sector.x += Math.floor(info.x/SECTOR_SIZE);
 		player.sector.y += Math.floor(info.y/SECTOR_SIZE);
-		console.log(player)
 		if(client.sector!=this.getSectorName(player.sector)) {
 			info = this.joinSector(client);
 			client.emit("joinSector",info);

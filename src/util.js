@@ -9,6 +9,10 @@ function blobFromBytes(buffer=undefined) {
 	return undefined;
 }
 
+function isBoolean(b) {
+	return typeof(b)==="boolean";
+}
+
 function centerTo(a,b) {
 	if(!b) {
 		b={width:0,height:0}
@@ -74,10 +78,10 @@ function moveTowards(current,target,speed) {
 	var dx = target.x-current.x;;
 	var dy = target.y - current.y
 	if(mag([dx,dy])>speed){
-		var angle = Math.atan2(dy,dx);
 		var n = norm([dx,dy]);
 		dx = n[0]*speed;
 		dy=n[1]*speed;
+		//var angle = Math.atan2(dy,dx);
 		/*dx=speed*Math.cos(angle)
 		dy=speed*Math.sin(angle)*/
 	}

@@ -41,18 +41,35 @@ class World extends PIXI.Container {
 	}
 
 	update(dt) {
+		this.updateInput();
 		Object.values(this.sectors).forEach(p=>p.update(dt));
+	}
+
+	updateInput() {
+		if(!game.player) return;
+		if(game.inputManager.axisChanged("Down")||game.inputManager.axisChanged("Right")) {
+			game.player.moveBy({
+				dx:game.inputManager.getAxis("Right"),
+				dy:game.inputManager.getAxis("Down")
+			})
+			game.emit("movePlayer",{
+				x:game.player.x,
+				y:game.player.y,
+				dx:game.player.dx,
+				dy:game.player.dy
+			});
+		}	
 	}
 
 	mouseDown(e) {
 		/*var pos = this.screenToWorld({x:e.pageX,y:e.pageY})
 		pos = game.sector.worldToSector(pos);*/
-		var pos = {
+		/*var pos = {
 			x:e.pageX-game.getScreen().width/2+game.player.x,
 			y:e.pageY-game.getScreen().height/2+game.player.y
-		}
-		game.emit("movePlayer",pos)
-		game.player.moveTo(pos)
+		}*/
+		//game.emit("movePlayer",pos)
+		//game.player.moveTo(pos)
 	}
 
 	async joinGame(info) {
