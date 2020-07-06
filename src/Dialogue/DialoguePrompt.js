@@ -22,8 +22,14 @@ class DialoguePrompt extends PIXI.Container {
 
 	}
 
-	update(dt) {
+	updateInput() {
+		if(game.inputManager.getButton("Submit")) {
+			this.submit.action();
+		}
+	}
 
+	update(dt) {
+		this.updateInput();
 		this.margin = 50/1080*window.innerHeight;
 		centerTo(this.title,game.getScreen());
 		this.title.y = this.margin;	

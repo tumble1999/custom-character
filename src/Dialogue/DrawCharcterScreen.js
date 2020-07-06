@@ -12,7 +12,7 @@ class DrawCharacterScreen extends DialoguePrompt {
 		var i=0;
 		for(var color in GameColors) {
 			var btn = new Button({
-				text:"hi",
+				text:" ",
 				action:(function(){
 					pen.color=numberToColor(this.color);
 				}),

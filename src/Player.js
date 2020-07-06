@@ -40,6 +40,11 @@ class Player extends PIXI.Container {
 		this.speed = info.speed;
 	}
 
+	updateCharacter(info)  {
+		this.info.textureBlob = info.textureBlob;
+		this.character.texture = PIXI.Texture.from(URL.createObjectURL(info.textureBlob))
+	}
+
 	updateFloatAnimation() {
 		var speed = this.animation.speed;
 		if(this.moving) {

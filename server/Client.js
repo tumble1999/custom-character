@@ -13,6 +13,7 @@ class Client {
 		this.bindSocket("disconnect")
 		this.bindSocket("joinGame")
 		this.bindSocket("movePlayer")
+		this.bindSocket("createCharacter")
 		console.log("Client Connected:", SOCKET+this.name+RESET);
 	}
 	getID() {
@@ -68,6 +69,13 @@ class Client {
 		info.id = this.player.id;
 		info.sector = this.sector;
 		this.game.movePlayer(this,info);
+	}
+
+	createCharacter(info) {
+		if(!this.player) return;
+		info.id = this.player.id;
+		info.sector = this.sector;
+		this.game.updateCharacter(this,info)
 	}
 }
 

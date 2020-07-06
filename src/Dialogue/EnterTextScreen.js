@@ -1,7 +1,6 @@
 class EnterTextScreen extends DialoguePrompt {
 	constructor(prompt,submit) {
 		super(prompt,submit);
-		this.submit = submit;
 		this.textInput = new PIXI.TextInput({
 			input: {
 				fontSize: '36px',
@@ -18,7 +17,7 @@ class EnterTextScreen extends DialoguePrompt {
 		this.textInput.placeholder = prompt
 		centerTo(this.textInput,game.getScreen());
 		this.addChild(this.textInput);
-
+		this.textInput.focus()
 	}
 
 	update(dt) {

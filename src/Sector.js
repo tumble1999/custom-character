@@ -91,7 +91,14 @@ class Sector extends PIXI.Container {
 	}
 
 	movePlayer(info) {
-		this.players[info.id].moveBy(info);
+		var player = this.players[info.id]
+		player.moveBy(info);
+	}
+
+	updateCharacter(info) {
+		var player = this.players[info.id]
+		info.textureBlob = blobFromBytes(info.textureBlob);
+		player.updateCharacter(info);
 	}
 
 	destroy(o) {

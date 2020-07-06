@@ -51,6 +51,9 @@ class Game {
 			return game.input.getKeyUp(Keyboard.LEFT_ARROW) ||
 			game.input.getKeyUp(Keyboard.RIGHT_ARROW);
 		});
+		this.inputManager.onButton("Submit",function() {
+			return game.input.getKeyDown(Keyboard.ENTER)
+		})
 	}
 
 	getScreen() {
@@ -113,9 +116,15 @@ class Game {
 
 	async createCharacter() {
 		console.log("Under Construction")
-		/*if(this.dialogue) await this.cleanDialogue()
-		this.dialogue = new DrawCharacterScreen("Draw a character",this.bind("login"));
-		this.app.addChild(this.dialogue);*/
+		if(this.dialogue) await this.cleanDialogue()
+		var g=this;
+		this.dialogue = new DrawCharacterScreen("Draw a character",async()=>{
+			var textureBlob = await g.dialogue.drawingSpace.createBlob();
+			game.player.updateCharacter({textureBlob})
+			game.emit("createCharacter",{textureBlob});
+			g.cleanDialogue();
+		});
+		this.app.addChild(this.dialogue);
 	}
 
 	async cleanDialogue() {
@@ -123,9 +132,6 @@ class Game {
 		if(this.dialogue.textInput){
 			this.info.name = this.dialogue.textInput.text;
 			children = false;
-		}
-		if(this.dialogue.drawingSpace){
-			this.info.textureBlob = await this.dialogue.drawingSpace.createBlob();
 		}
 		this.dialogue.destroy({children});
 		delete this.dialogue;
@@ -136,6 +142,15 @@ class Game {
 		this.data.characters.default = await this.loadFile("media/default.png")
 		this.world = new World();
 		this.app.addChild(this.world)
+
+		var testButton = new Button({text:"Change Character",action:this.bind("createCharacter"),color:GameColors.orange,margin:20})
+		//centerTo(testButton,game.getScreen());
+		testButton.x = game.getScreen().width-testButton.width-10;
+		testButton.y = game.getScreen().height-testButton.height-10;
+		this.app.addChild(testButton);
+		if(testButton) console.log("dsdasdas")
+
+
 		if(this.info) {
 			this.emit("joinGame",this.info);
 		}
@@ -157,7 +172,6 @@ class Game {
 			return
 		}
 		if(this.dialogue&&this.dialogue.mouseDown)this.dialogue.mouseDown(e);
-		if(this.world&&this.world.mouseDown) this.world.mouseDown(e);
 	}
 
 	mouseMove(e) {

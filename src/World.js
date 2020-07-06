@@ -3,7 +3,7 @@ class World extends PIXI.Container {
 		super();
 		this.bind = createBinder(this);
 		this.sectors = {};
-		this.players = {}
+		this.players = {};
 
 		this.bindSocket("joinGame")
 		this.bindSocket("joinMap")
@@ -11,6 +11,7 @@ class World extends PIXI.Container {
 		this.bindSocket("addPlayer")
 		this.bindSocket("removePlayer")
 		this.bindSocket("movePlayer")
+		this.bindSocket("updateCharacter")
 	}
 
 	bindSocket(name) {
@@ -59,17 +60,6 @@ class World extends PIXI.Container {
 				dy:game.player.dy
 			});
 		}	
-	}
-
-	mouseDown(e) {
-		/*var pos = this.screenToWorld({x:e.pageX,y:e.pageY})
-		pos = game.sector.worldToSector(pos);*/
-		/*var pos = {
-			x:e.pageX-game.getScreen().width/2+game.player.x,
-			y:e.pageY-game.getScreen().height/2+game.player.y
-		}*/
-		//game.emit("movePlayer",pos)
-		//game.player.moveTo(pos)
 	}
 
 	async joinGame(info) {
@@ -124,20 +114,28 @@ class World extends PIXI.Container {
 	}
 
 	addPlayer(info) {
+		var sector = this.sectors[info.sector]||game.sector;
 		if(!game.info.players.map(i=>i.id).includes(info.id)) {
 			game.info.players.push(info);
 		}
-		this.sectors[this.getSectorName(info.sector)].addPlayer(info)
+		sector.addPlayer(info)
 	}
 	
 	removePlayer(info) {
+		var sector = this.sectors[info.sector]||game.sector;
 		if(game.info.players.map(i=>i.id).includes(info.id)) {
 			game.info.player = game.info.players.filter(p=>p!=info.id)
 		}
-		this.sectors[info.sector].removePlayer(info.id);
+		sector.removePlayer(info.id);
 	}
 
 	movePlayer(info) {
-		this.sectors[info.sector].movePlayer(info);
+		var sector = this.sectors[info.sector]||game.sector;
+		sector.movePlayer(info);
+	}
+
+	updateCharacter(info) {
+		var sector = this.sectors[info.sector]||game.sector;
+		sector.updateCharacter(info);
 	}
 }

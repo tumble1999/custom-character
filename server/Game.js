@@ -158,8 +158,13 @@ class Game {
 			info = this.joinSector(client);
 			client.emit("joinSector",info);
 		} else {
-			this.emitToMap(client,"movePlayer",info);
+			this.emitToSector(client,"movePlayer",info);
 		}
+	}
+	updateCharacter(client,info) {
+		var player = client.player;
+		player.textureBlob = info.textureBlob;
+		this.emitToSector(client,"updateCharacter",info);
 	}
 }
 
