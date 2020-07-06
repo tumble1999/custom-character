@@ -5,6 +5,11 @@ class World extends PIXI.Container {
 		this.sectors = {};
 		this.players = {};
 
+		if(game.data.maps[game.info.map]) {
+			this.data = game.data.maps[game.info.map];
+			this.loadData();
+		}
+
 		this.bindSocket("joinGame")
 		this.bindSocket("joinMap")
 		this.bindSocket("joinSector")
@@ -12,6 +17,10 @@ class World extends PIXI.Container {
 		this.bindSocket("removePlayer")
 		this.bindSocket("movePlayer")
 		this.bindSocket("updateCharacter")
+	}
+
+	async loadData() {
+		if(this.data.sectorMap) this.sectorMap = await game.loadImage(this.data.sectorMap)
 	}
 
 	bindSocket(name) {
@@ -39,6 +48,12 @@ class World extends PIXI.Container {
 
 	getSectorName({x,y}) {
 		return x+"-"+y;
+	}
+
+	withinWorld(pos) {
+		var bounds = game.data.maps[game.info.map].bounds;
+		return bounds.x*game.info.SECTOR_SIZE <=pos.x&&pos.x<(bounds.width+1)*game.info.SECTOR_SIZE&&
+			bounds.y*game.info.SECTOR_SIZE <=pos.y&&pos.y<(bounds.height+1)*game.info.SECTOR_SIZE;
 	}
 
 	update(dt) {
@@ -93,7 +108,7 @@ class World extends PIXI.Container {
 		game.info.sectors = info.sectors;
 
 		for(var sector in this.sectors) {
-			if(!info.sectors.map(r=>r.name).includes(sector)){
+			if(!info.sectors.map(r=>r.name).includes(sector)&&this.withinWorld(sector)){
 				this.removeSector(sector);
 			}
 		}

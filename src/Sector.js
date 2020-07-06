@@ -26,9 +26,7 @@ class Sector extends PIXI.Container {
 	}
 
 	async loadData() {
-
-		//this.collision = await game.loadFile(this.data.collisionMap)
-
+		if(this.data.collisionMap) this.collision = new PixelQueryer(await game.loadFile(this.data.collisionMap));
 	}
 
 	update(dt) {

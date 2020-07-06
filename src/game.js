@@ -87,6 +87,19 @@ class Game {
 
 		})
 	}
+
+	async loadImage(path) {
+		var g = this;
+		return new Promise((resolve,reject)=>{
+			var image = new Image();
+			image.addEventListener("load",function() {
+				resolve(image);
+				console.log("Image Loaded",path)
+			})
+			image.setAttribute("src",path)
+
+		})
+	}
 	
 	startGame(ip) {
 		if(this.dialogue) {
@@ -122,6 +135,10 @@ class Game {
 		this.bind("login")
 		);
 		this.app.addChild(this.dialogue);
+	}
+
+	getSectorName({x,y}) {
+		return x+"-"+y;
 	}
 
 	async createCharacter() {

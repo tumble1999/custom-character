@@ -29,17 +29,25 @@ class Game {
 			y:y*SECTOR_SIZE
 		});
 
-		return [
-			getSector(x+1,y-1),//North-West
-			getSector(x-1,y+1),//South-East
-			getSector(x+1,y+1),//South-West
-			getSector(x-1,y-1),//North-East
-			getSector(x,y-1),//North
-			getSector(x,y+1),//South
-			getSector(x-1,y),//West
-			getSector(x+1,y),//East
-			getSector(x,y)//Current
-		]
+		var sectors = [];
+
+		if(x>0&&y>0) sectors.push(getSector(x-1,y-1))//North-West
+		if(x>0) {
+			sectors.push(getSector(x-1,y+1))//South-West
+			sectors.push(getSector(x-1,y))//West
+		}
+		if(y>0) {
+			sectors.push(getSector(x+1,y-1))//North-East
+			sectors.push(getSector(x,y-1))//North
+
+		}
+
+		sectors.push(getSector(x+1,y+1))//South-East
+		sectors.push(getSector(x,y+1))//South
+		sectors.push(getSector(x+1,y))//East
+		sectors.push(getSector(x,y))//Current
+
+		return sectors
 	}
 
 	getPlayers(player) {

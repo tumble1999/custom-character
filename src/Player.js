@@ -37,9 +37,16 @@ class Player extends PIXI.Container {
 		this.x = info.x+dif[0]
 		this.y = info.y+dif[1];
 		this.sector = info.sector;
+		this.sectorName = game.getSectorName(info.sector)
 		this.speed = info.speed;
 		this.dx = info.dx;
 		this.dy = info.dy
+	}
+
+	collidingWithWall() {
+		return !game.world.withinWorld(this.worldPos)||
+		(this.getSector().collision&&
+		this.getSector().collision.getPixel(this)==GameColors.green)
 	}
 
 	updateCharacter(info)  {
@@ -56,6 +63,10 @@ class Player extends PIXI.Container {
 		this.character.y = (Math.sin(time)-1)*this.animation.yMax;
 	}
 
+	getSector() {
+		return game.world.sectors[this.sectorName];
+	}
+
 	update() {
 		// var pos = moveTowards({x:this.x,y:this.y},this.destination,this.speed);
 		// this.x = pos.x;
@@ -63,8 +74,15 @@ class Player extends PIXI.Container {
 		// this.moving = !(this.x==this.destination.x&&this.y==this.destination.y);
 		this.moving = this.dx !=0||this.dy!=0;
 		if(this.moving){
+			var oldX = this.x;
+			var oldY = this.y;
 			this.x += this.dx * this.speed;
 			this.y += this.dy * this.speed;
+
+			if(this.collidingWithWall()){
+				this.x = oldX;
+				this.y = oldY
+			}
 		}
 		
 		centerTo(this.nicknameSprite,this);
