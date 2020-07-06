@@ -30,26 +30,46 @@ class Game {
 		this.input = new Input();
 		this.inputManager = new InputManager();
 		this.inputManager.onAxis("Down",function(){
-			var up = game.input.getKey(Keyboard.UP_ARROW)?1:0;
-			var down = game.input.getKey(Keyboard.DOWN_ARROW)?1:0;
+			var up = (
+				game.input.getKey(Keyboard.UP_ARROW)||
+				game.input.getKey(Keyboard.KEY_W)
+			)?1:0;
+			var down = (
+				game.input.getKey(Keyboard.DOWN_ARROW)||
+				game.input.getKey(Keyboard.KEY_S)
+			)?1:0;			
 			return down-up;
 		},function() {
 			return game.input.getKeyDown(Keyboard.UP_ARROW) ||
-			game.input.getKeyDown(Keyboard.DOWN_ARROW);
+			game.input.getKeyDown(Keyboard.DOWN_ARROW)||
+			game.input.getKeyDown(Keyboard.KEY_W)||
+			game.input.getKeyDown(Keyboard.KEY_S);
 		},function() {
 			return game.input.getKeyUp(Keyboard.UP_ARROW) ||
-			game.input.getKeyUp(Keyboard.DOWN_ARROW);
+			game.input.getKeyUp(Keyboard.DOWN_ARROW)||
+			game.input.getKeyUp(Keyboard.KEY_W)||
+			game.input.getKeyUp(Keyboard.KEY_S);
 		});
 		this.inputManager.onAxis("Right",function(){
-			var left = game.input.getKey(Keyboard.LEFT_ARROW)?1:0;
-			var right = game.input.getKey(Keyboard.RIGHT_ARROW)?1:0;
+			var left = (
+				game.input.getKey(Keyboard.LEFT_ARROW)||
+				game.input.getKey(Keyboard.KEY_A)
+			)?1:0;
+			var right = (
+				game.input.getKey(Keyboard.RIGHT_ARROW)||
+				game.input.getKey(Keyboard.KEY_D)
+			)?1:0;
 			return right-left;
 		},function() {
 			return game.input.getKeyDown(Keyboard.LEFT_ARROW) ||
-			game.input.getKeyDown(Keyboard.RIGHT_ARROW);
+			game.input.getKeyDown(Keyboard.RIGHT_ARROW)||
+			game.input.getKeyDown(Keyboard.KEY_A)||
+			game.input.getKeyDown(Keyboard.KEY_D);
 		},function() {
 			return game.input.getKeyUp(Keyboard.LEFT_ARROW) ||
-			game.input.getKeyUp(Keyboard.RIGHT_ARROW);
+			game.input.getKeyUp(Keyboard.RIGHT_ARROW)||
+			game.input.getKeyUp(Keyboard.KEY_A)||
+			game.input.getKeyUp(Keyboard.KEY_D);
 		});
 		this.inputManager.onButton("Submit",function() {
 			return game.input.getKeyDown(Keyboard.ENTER)
