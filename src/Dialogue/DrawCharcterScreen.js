@@ -25,6 +25,10 @@ class DrawCharacterScreen extends DialoguePrompt {
 		this.pallet = pallet;
 		centerTo(this.pallet,game.getScreen())
 
+		
+		window.addEventListener("mousedown", this.bind("mouseDown"),true);
+		window.addEventListener("mouseup", this.bind("mouseUp"),true);
+		window.addEventListener("mousemove",this.bind("mouseMove"),true);
 	}
 
 	updatePalletColor(btn,i) {
@@ -48,28 +52,35 @@ class DrawCharacterScreen extends DialoguePrompt {
 	}
 
 	destroy(o) {
+		
+		window.removeEventListener("mousedown", this.bind("mouseDown"),true);
+		window.removeEventListener("mouseup", this.bind("mouseUp"),true);
+		window.removeEventListener("mousemove",this.bind("mouseMove"),true);
+
 		super.destroy(o);
 		this.drawingSpace.destroy();
 	}
 
-	localisePos(x,y) {
-		return [
-			x-this.x-this.drawingSpace.x,
-			y-this.y-this.drawingSpace.y
-		]
+	localisePos(pos) {
+		return {
+			x:pos.x-this.x-this.drawingSpace.x,
+			y:pos.y-this.y-this.drawingSpace.y
+		}
 	}
 
 	mouseDown(e) {
 		if(!this) return;
+		var pos = {x:e.pageX, y:e.pageY}
 		// Disable scroll if in Draw Space
 		//if(inside(mouseWorld.toArray(),this.drawingSpace.canvasMesh.geometry.vertices.map(v=>v.toArray()))) disableScroll();
-		this.drawingSpace.startDrawing(...this.localisePos(e.pageX, e.pageY));
+		this.drawingSpace.startDrawing(this.localisePos(pos));
 
 	}
 
 	mouseMove(e) {
 		if(!this) return;
-		this.drawingSpace.draw(...this.localisePos(e.pageX, e.pageY));
+		var pos = {x:e.pageX, y:e.pageY}
+		this.drawingSpace.draw(this.localisePos(pos));
 
 	}
 

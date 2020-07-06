@@ -150,6 +150,8 @@ class Game {
 
 	movePlayer(client,info) {
 		var player = client.player;
+		player.dx = info.dx;
+		player.dy = info.dy;
 		player.x = (info.x+SECTOR_SIZE)%SECTOR_SIZE;
 		player.y = (info.y+SECTOR_SIZE)%SECTOR_SIZE;
 		player.sector.x += Math.floor(info.x/SECTOR_SIZE);

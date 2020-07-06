@@ -13,17 +13,7 @@ class Game {
 		this.info = {};
 		document.body.appendChild(this.app.domElement())
 		this.app.onUpdate(this.bind("update"));
-		window.addEventListener("mousedown", this.bind("mouseDown"));
-		window.addEventListener("mouseup", this.bind("mouseUp"));
-		window.addEventListener("mousemove",this.bind("mouseMove"));
 		window.addEventListener("resize",this.bind("windowResize"))
-		window.addEventListener("mousewheel",e=>{
-			if(e.altKey) {
-				game.world.x -= e.deltaY;
-			} else {
-				game.world.y -= e.deltaY;
-			}
-		})
 	}
 
 	setupInput() {
@@ -183,23 +173,6 @@ class Game {
 
 	on(...a) {
 		this.socket&&(this.socket.on(...a))
-	}
-
-	mouseDown(e) {
-		if(e.which == 2) {
-			game.world.x = 0;
-			game.world.y = 0;
-			return
-		}
-		if(this.dialogue&&this.dialogue.mouseDown)this.dialogue.mouseDown(e);
-	}
-
-	mouseMove(e) {
-		if(this.dialogue&&this.dialogue.mouseMove) this.dialogue.mouseMove(e);
-	}
-
-	mouseUp(e) {
-		if(this.dialogue&&this.dialogue.mouseUp) this.dialogue.mouseUp(e);
 	}
 
 	windowResize(e) {

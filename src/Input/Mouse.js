@@ -14,8 +14,8 @@ class Mouse {
 			if (mousescrollend) {
 				clearTimeout(mousescrollend);
 			}
-			Mouse.scrollX = Math.sign(e.deltaX);
-			Mouse.scrollY = Math.sign(e.deltaY);
+			Mouse.scrollX = e.deltaX;
+			Mouse.scrollY =	e.deltaY;
 			var mousescrollend = setTimeout(Mouse.ResetScroll, 50);
 		});
 		document.addEventListener('mousemove', (e) => {

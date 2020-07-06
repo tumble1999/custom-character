@@ -38,6 +38,8 @@ class Player extends PIXI.Container {
 		this.y = info.y+dif[1];
 		this.sector = info.sector;
 		this.speed = info.speed;
+		this.dx = info.dx;
+		this.dy = info.dy
 	}
 
 	updateCharacter(info)  {
@@ -72,10 +74,10 @@ class Player extends PIXI.Container {
 	}
 	
 	moveBy(info) {
-		if(info.x) this.x = info.x;
-		if(info.y) this.y = info.y;
-		if(!isNaN(info.dx)) this.dx = info.dx;
-		if(!isNaN(info.dy)) this.dy = info.dy;
+		if(info.x) this.info.x = this.x = info.x;
+		if(info.y) this.info.y = this.y = info.y;
+		if(!isNaN(info.dx)) this.info.dx = this.dx = info.dx;
+		if(!isNaN(info.dy)) this.info.dy = this.dy = info.dy;
 	}
 
 	moveTo(pos) {

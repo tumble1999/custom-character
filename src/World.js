@@ -42,12 +42,24 @@ class World extends PIXI.Container {
 	}
 
 	update(dt) {
-		this.updateInput();
+		this.updateInput(dt);
 		Object.values(this.sectors).forEach(p=>p.update(dt));
 	}
 
-	updateInput() {
+	updateInput(dt) {
 		if(!game.player) return;
+		if(game.input.getMouseDown(Mouse.MIDDLE_CLICK)) {
+			this.x = 0;
+			this.y = 0;
+		} else{
+			var scroll = game.input.getMouseScroll();
+			if(game.input.getKey(Keyboard.ALT)) {
+				this.x -= scroll.y*dt;
+			} else {
+				this.x -= scroll.x*dt;
+				this.y -= scroll.y*dt;
+			}
+		}
 		if(game.inputManager.axisChanged("Down")||game.inputManager.axisChanged("Right")) {
 			game.player.moveBy({
 				dx:game.inputManager.getAxis("Right"),

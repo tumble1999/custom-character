@@ -28,33 +28,34 @@ class DrawSpace extends PIXI.Container {
 		this.stage.canvas.height = h;
 	}
 
-	startDrawing(x,y) {
+	startDrawing(pos) {
 		this.pen.active = true;
-		this.draw(x,y);
+		this.draw(pos);
 	}
 
-	stopDrawing(x,y) {
-		if(!this.pen.moved&&x&&y) this.draw(x,y);
+	stopDrawing(pos) {
+		if(!this.pen.moved&&pos&&pos.x&&pos.y) this.draw(pos);
 		this.pen.active = false;
 		this.pen.moved = false;
 		this.pen.x = this.pen.y = null;
 	}
 
-	draw(x,y) {
-		x/=5;
-		y/=5;
+	draw(pos) {
+		if(!pos) return;
+		pos.x/=5;
+		pos.y/=5;
 		if(this.pen.active) {
 			if (this.pen.x) {
 				this.moved = true;
 				this.drawing.graphics.beginStroke(this.pen.color)
 					.setStrokeStyle(this.pen.size, "round")
-					.moveTo(this.pen.x||x, this.pen.y||y)
-					.lineTo(x,y);
+					.moveTo(this.pen.x||pos.x, this.pen.y||pos.y)
+					.lineTo(pos.x,pos.y);
 				this.stage.update();
 				this.sprite.texture.update();
 			}
-			this.pen.x = x;
-			this.pen.y = y;
+			this.pen.x = pos.x;
+			this.pen.y = pos.y;
 		}
 	}
 

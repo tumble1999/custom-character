@@ -6,7 +6,9 @@ var defaultPlayer = {
 	sectorX:0,
 	sectorY:0,
 	x:0,
-	y:0
+	y:0,
+	dx:0,
+	dy:0
 }
 
 class Player {
@@ -23,6 +25,8 @@ class Player {
 		},
 		this.x = info.x;
 		this.y = info.y;
+		this.dx = info.dx;
+		this.dy = info.dy
 		console.log("Created Player",PLAYER+this.name+RESET);
 	}
 }

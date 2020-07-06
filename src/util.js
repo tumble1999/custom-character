@@ -1,6 +1,12 @@
 function createBinder(instance) {
+	var bindings = {};
 	return (function(a,...p){
-		return this[a].bind(this,...p);
+		var bind = bindings[a];
+		if(!bind) {
+			bind = this[a].bind(this,...p);
+			bindings[a] = bind;
+		}
+		return bind;
 	}).bind(instance);
 }
 
