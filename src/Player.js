@@ -29,6 +29,28 @@ class Player extends PIXI.Container {
 		}
 	}
 
+	getSector() {
+		return game.world.sectors[this.sectorName];
+	}
+
+	getWorldBounds() {
+		return new PIXI.Rectangle(
+			this.worldPos.x,
+			this.worldPos.y,
+			this.width,
+			this.height
+		)
+	}
+
+	getSectorBounds() {
+		return new PIXI.Rectangle(
+			this.x,
+			this.y,
+			100,
+			100
+		)
+	}
+
 	async updateInfo(info) {
 		this.info = info;
 		if(info.textureBlob) this.character.texture = PIXI.Texture.from(URL.createObjectURL(info.textureBlob))
@@ -43,10 +65,10 @@ class Player extends PIXI.Container {
 		this.dy = info.dy
 	}
 
-	collidingWithWall() {
-		return !game.world.withinWorld(this.worldPos)||
-		(this.getSector().collision&&
-		this.getSector().collision.getPixel(this)==GameColors.green)
+	colliding() {
+		var c = !game.world.withinWorld(this.getWorldBounds())||
+		this.getSector().colliding(this.getSectorBounds())
+		return c
 	}
 
 	updateCharacter(info)  {
@@ -63,10 +85,6 @@ class Player extends PIXI.Container {
 		this.character.y = (Math.sin(time)-1)*this.animation.yMax;
 	}
 
-	getSector() {
-		return game.world.sectors[this.sectorName];
-	}
-
 	update() {
 		// var pos = moveTowards({x:this.x,y:this.y},this.destination,this.speed);
 		// this.x = pos.x;
@@ -79,7 +97,7 @@ class Player extends PIXI.Container {
 			this.x += this.dx * this.speed;
 			this.y += this.dy * this.speed;
 
-			if(this.collidingWithWall()){
+			if(this.colliding()){
 				this.x = oldX;
 				this.y = oldY
 			}

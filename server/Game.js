@@ -2,7 +2,6 @@ const socketIo = require('socket.io');
 const Client = require('./Client');
 var Player = require('./Player');
 const { SOCKET,RESET,PLAYER,MAP,SECTOR } = require('./ColorLog');
-const { platform } = require('os');
 
 var SECTOR_SIZE = 2048;
 
@@ -164,12 +163,17 @@ class Game {
 		player.y = (info.y+SECTOR_SIZE)%SECTOR_SIZE;
 		player.sector.x += Math.floor(info.x/SECTOR_SIZE);
 		player.sector.y += Math.floor(info.y/SECTOR_SIZE);
-		if(client.sector!=this.getSectorName(player.sector)) {
+		if(player.sector.x<0||player.sector.y<0) {
+			player.sector.x -= Math.floor(info.x/SECTOR_SIZE);
+			player.sector.y -= Math.floor(info.y/SECTOR_SIZE);
+			player.x = info.x;
+			player.y = info.y
+		}else if(client.sector!=this.getSectorName(player.sector)) {
 			info = this.joinSector(client);
 			client.emit("joinSector",info);
-		} else {
-			this.emitToSector(client,"movePlayer",info);
+			return;
 		}
+		this.emitToSector(client,"movePlayer",info);
 	}
 	updateCharacter(client,info) {
 		var player = client.player;

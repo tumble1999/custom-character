@@ -27,7 +27,7 @@ class Game {
 			var down = (
 				game.input.getKey(Keyboard.DOWN_ARROW)||
 				game.input.getKey(Keyboard.KEY_S)
-			)?1:0;			
+			)?1:0;
 			return down-up;
 		},function() {
 			return game.input.getKeyDown(Keyboard.UP_ARROW) ||
@@ -137,8 +137,17 @@ class Game {
 		this.app.addChild(this.dialogue);
 	}
 
-	getSectorName({x,y}) {
-		return x+"-"+y;
+	getSectorName(sector) {
+		return sector.x+"-"+sector.y;
+	}
+
+	getSectorRect(sector) {
+		return new PIXI.Rectangle(
+			sector.x,
+			sector.y,
+			this.info.SECTOR_SIZE,
+			this.info.SECTOR_SIZE
+		)
 	}
 
 	async createCharacter() {
@@ -175,7 +184,6 @@ class Game {
 		testButton.x = game.getScreen().width-testButton.width-10;
 		testButton.y = game.getScreen().height-testButton.height-10;
 		this.app.addChild(testButton);
-		if(testButton) console.log("dsdasdas")
 
 
 		if(this.info) {

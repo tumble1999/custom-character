@@ -3,10 +3,10 @@ const { PLAYER,RESET } = require("./ColorLog");
 var defaultPlayer = {
 	speed:3,
 	map:"overworld",
-	sectorX:0,
-	sectorY:0,
-	x:0,
-	y:0,
+	sectorX:5,
+	sectorY:9,
+	x:1024,
+	y:1024,
 	dx:0,
 	dy:0
 }

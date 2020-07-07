@@ -5,11 +5,6 @@ class World extends PIXI.Container {
 		this.sectors = {};
 		this.players = {};
 
-		if(game.data.maps[game.info.map]) {
-			this.data = game.data.maps[game.info.map];
-			this.loadData();
-		}
-
 		this.bindSocket("joinGame")
 		this.bindSocket("joinMap")
 		this.bindSocket("joinSector")
@@ -20,7 +15,9 @@ class World extends PIXI.Container {
 	}
 
 	async loadData() {
-		if(this.data.sectorMap) this.sectorMap = await game.loadImage(this.data.sectorMap)
+		var mapData = game.data.maps[game.info.map];
+		console.log(mapData)
+		if(mapData.sectorMap) this.sectorMap = await game.loadImage(mapData.sectorMap)
 	}
 
 	bindSocket(name) {
@@ -32,14 +29,14 @@ class World extends PIXI.Container {
 	}
 
 	screenToWorld(pos) {
-		var playerPos = game.sector?game.sector.sectorToWorld(game.player):game.player;
+		var playerPos = game.sector?game.player.worldPos:game.player;
 		return {
 			x:pos.x-game.getScreen().width/2+playerPos.x,
 			y:pos.y-game.getScreen().height/2+playerPos.y
 		}
 	}
 	worldToScreen(pos) {
-		var playerPos = game.sector?game.sector.sectorToWorld(game.player):game.player;
+		var playerPos = game.sector?game.player.worldPos:game.player;
 		return {
 			x:pos.x-playerPos.x+game.getScreen().width/2,
 			y:pos.y-playerPos.y+game.getScreen().height/2
@@ -50,10 +47,20 @@ class World extends PIXI.Container {
 		return x+"-"+y;
 	}
 
-	withinWorld(pos) {
+	getWorldBounds() {
 		var bounds = game.data.maps[game.info.map].bounds;
-		return bounds.x*game.info.SECTOR_SIZE <=pos.x&&pos.x<(bounds.width+1)*game.info.SECTOR_SIZE&&
-			bounds.y*game.info.SECTOR_SIZE <=pos.y&&pos.y<(bounds.height+1)*game.info.SECTOR_SIZE;
+		return new PIXI.Rectangle(
+			bounds.x*game.info.SECTOR_SIZE,
+			bounds.y*game.info.SECTOR_SIZE,
+			bounds.width*game.info.SECTOR_SIZE,
+			bounds.height*game.info.SECTOR_SIZE
+		)
+
+	}
+
+	withinWorld(bounds) {
+		var worldBounds = this.getWorldBounds();
+		return rectsIntersect(bounds,worldBounds);
 	}
 
 	update(dt) {
@@ -66,7 +73,7 @@ class World extends PIXI.Container {
 		if(game.input.getMouseDown(Mouse.MIDDLE_CLICK)) {
 			this.x = 0;
 			this.y = 0;
-		} else{
+		} else {
 			var scroll = game.input.getMouseScroll();
 			if(game.input.getKey(Keyboard.ALT)) {
 				this.x -= scroll.y*dt;
@@ -90,6 +97,7 @@ class World extends PIXI.Container {
 	}
 
 	async joinGame(info) {
+		console.log("join game")
 		game.info.id = info.id;
 		game.info.server = info.server;
 		game.info.SECTOR_SIZE = info.SECTOR_SIZE;
@@ -97,22 +105,25 @@ class World extends PIXI.Container {
 	}
 
 	async joinMap(info) {
+		console.log("join map")
 		game.info.map = info.map;
 		game.data.maps[info.map] = await game.loadFile("data/maps/" + info.map + ".json")
 		await this.joinSector(info);
 	}
 
 	async joinSector(info) {
+		console.log("joing sector")
 		game.info.sector = info.sector;
 		game.info.players = info.players;
 		game.info.sectors = info.sectors;
 
 		for(var sector in this.sectors) {
-			if(!info.sectors.map(r=>r.name).includes(sector)&&this.withinWorld(sector)){
+			if(!info.sectors.map(r=>r.name).includes(sector)){
 				this.removeSector(sector);
 			}
 		}
 		for(var s of info.sectors) {
+			if(!this.withinWorld(game.getSectorRect(s))) continue;
 			var sector = this.addSector(s);
 			if(game.info.sector==s.name) {
 				game.sector = sector;

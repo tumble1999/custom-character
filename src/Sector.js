@@ -93,6 +93,24 @@ class Sector extends PIXI.Container {
 		player.moveBy(info);
 	}
 
+	pointColliding(pos) {
+		return this.collision&&this.collision.getPixel(pos)==GameColors.green
+	}
+
+	colliding(r) {
+		var rPos = [
+			{x:r.left,y:r.top},
+			{x:r.left,y:r.bottom},
+			{x:r.right,y:r.top},
+			{x:r.right,y:r.bottom}
+		]
+		var out = false;
+		for (var p of rPos) {
+			out =out||this.pointColliding(p);
+		}
+		return out;
+	}
+
 	updateCharacter(info) {
 		var player = this.players[info.id]
 		info.textureBlob = blobFromBytes(info.textureBlob);
