@@ -20,5 +20,9 @@
 	},
 	"1-1": {
 		"background":"media/maps/overworld/1-1/background.png"
+	},
+	"5-9": {
+		"background":"media/maps/overworld/5-9/background.png",
+		"collisionMap":"media/maps/overworld/5-9/collision.png"
 	}
 }
