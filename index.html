@@ -10,8 +10,8 @@
 		body {
 			margin: 0;
 			padding: 0;
-			width: 100vw;
-			height: 100vh;
+			width: 100%;
+			height: 100%;
 			/* overscroll-behavior: none; */
 		}
 	</style>
@@ -20,11 +20,11 @@
 <body>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
 	<script src="https://pixijs.download/v5.3.0/pixi.min.js"></script>
-	<script src="https://manuelotto.com/opensource/PIXI.TextInput/dist/PIXI.TextInput.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/pixi-text-input@1.0.6/PIXI.TextInput.js"></script>
 	<script src="https://code.createjs.com/1.0.0/createjs.min.js"></script>
 	<script>
 		window.io || document.write('<script src="client/socket.io.js">\x3C/script>');
-		window.createjs||document.write('<script src="client/createjs.min.js">\x3C/script>');
+		window.createjs || document.write('<script src="client/createjs.min.js">\x3C/script>');
 	</script>
 	<!-- Game Script -->
 	<script src="client/game.min.js"></script>
